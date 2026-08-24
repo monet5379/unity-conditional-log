@@ -43,6 +43,10 @@ A wrapper without `[Conditional("UNITY_EDITOR")]` still evaluates the caller’s
 
 Menu: **Conditional Log → Settings**. Play mode: **F1** overlay.
 
+![Log Settings](docs/images/settings.png)
+
+![F1 overlay in Play mode](docs/images/f1-overlay.png)
+
 Write-up: [Conditional log and build cost](https://monet5379.github.io/notes/conditional-log-build-cost/)
 
 ## Current design
@@ -104,6 +108,10 @@ GameLog.Info(GameLog.Combat, $"dmg={damage}");
 `Assets/Demo`는 필터 놀이터일 뿐입니다 (string 태그 리터럴). 태그/enum 템플릿이 아닙니다.
 
 메뉴: **Conditional Log → Settings**. Play에서는 **F1** 오버레이.
+
+![Log Settings](docs/images/settings.png)
+
+![F1 오버레이 (Play)](docs/images/f1-overlay.png)
 
 글: [Conditional 로그와 빌드 비용](https://monet5379.github.io/notes/conditional-log-build-cost/)
 
