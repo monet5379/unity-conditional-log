@@ -1,0 +1,18 @@
+{
+    "name": "ConditionalLog.Editor",
+    "rootNamespace": "ConditionalLog.Editor",
+    "references": [
+        "ConditionalLog.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
