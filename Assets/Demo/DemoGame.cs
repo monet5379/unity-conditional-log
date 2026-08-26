@@ -21,6 +21,8 @@ namespace ConditionalLog.Demo
         private GameObject _obstacleTemplate;
         private Vector3 _runnerStart;
         private Text _hud;
+        private Text _filterHint;
+        private string _hudKey = "demo.hud.start";
 
         public bool IsPlaying { get; private set; }
 
@@ -33,8 +35,32 @@ namespace ConditionalLog.Demo
 
         private void Start()
         {
-            ShowHud("Press Space to start");
-            Log.Info("Hud", "press space to start");
+            ConditionalLogLocale.LanguageChanged += OnLanguageChanged;
+            ShowHudKey("demo.hud.start");
+            Log.Info("Hud", DemoStrings.T("demo.log.press_start"));
+        }
+
+        private void OnDestroy()
+        {
+            ConditionalLogLocale.LanguageChanged -= OnLanguageChanged;
+        }
+
+        private void OnLanguageChanged()
+        {
+            RefreshLocaleUi();
+        }
+
+        private void RefreshLocaleUi()
+        {
+            if (_filterHint != null)
+            {
+                _filterHint.text = DemoStrings.T("demo.hint_f1");
+            }
+
+            if (!IsPlaying && !string.IsNullOrEmpty(_hudKey))
+            {
+                ShowHudKey(_hudKey);
+            }
         }
 
         private void Update()
@@ -58,10 +84,10 @@ namespace ConditionalLog.Demo
             }
 
             IsPlaying = false;
-            Log.Warning("Obstacle", "collision");
-            Log.Error("Hud", "game over");
-            Log.Info("Hud", "press space to restart");
-            ShowHud("Game over\nPress Space to restart");
+            Log.Warning("Obstacle", DemoStrings.T("demo.log.collision"));
+            Log.Error("Hud", DemoStrings.T("demo.log.game_over"));
+            Log.Info("Hud", DemoStrings.T("demo.log.press_restart"));
+            ShowHudKey("demo.hud.game_over");
         }
 
         private void BeginRun()
@@ -69,8 +95,15 @@ namespace ConditionalLog.Demo
             ClearObstacles();
             _runner.ResetPose(_runnerStart);
             IsPlaying = true;
+            _hudKey = string.Empty;
             ShowHud(string.Empty);
-            Log.Progress("Boot", "run start");
+            Log.Progress("Boot", DemoStrings.T("demo.log.run_start"));
+        }
+
+        private void ShowHudKey(string key)
+        {
+            _hudKey = key ?? string.Empty;
+            ShowHud(string.IsNullOrEmpty(_hudKey) ? string.Empty : DemoStrings.T(_hudKey));
         }
 
         private void ShowHud(string message)
@@ -137,7 +170,7 @@ namespace ConditionalLog.Demo
             Camera cam = Camera.main;
             if (cam == null)
             {
-                Log.Warning("Boot", "no main camera");
+                Log.Warning("Boot", DemoStrings.T("demo.log.no_camera"));
             }
             else
             {
@@ -158,15 +191,10 @@ namespace ConditionalLog.Demo
             canvasGo.AddComponent<CanvasScaler>();
             canvasGo.AddComponent<GraphicRaycaster>();
 
-            Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            Font font = OsOrBuiltinFont.Resolve();
             if (font == null)
             {
-                font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            }
-
-            if (font == null)
-            {
-                Log.Error("Hud", "no builtin font");
+                Log.Error("Hud", DemoStrings.T("demo.log.no_font"));
             }
 
             GameObject hintGo = new GameObject("FilterHint");
@@ -178,7 +206,9 @@ namespace ConditionalLog.Demo
             hint.color = new Color(1f, 1f, 1f, 0.9f);
             hint.horizontalOverflow = HorizontalWrapMode.Overflow;
             hint.verticalOverflow = VerticalWrapMode.Overflow;
-            hint.text = "F1 — log filters";
+            hint.supportRichText = false;
+            hint.text = DemoStrings.T("demo.hint_f1");
+            _filterHint = hint;
             RectTransform hintRect = hint.rectTransform;
             hintRect.anchorMin = new Vector2(0f, 1f);
             hintRect.anchorMax = new Vector2(1f, 1f);
@@ -195,6 +225,7 @@ namespace ConditionalLog.Demo
             text.color = Color.white;
             text.horizontalOverflow = HorizontalWrapMode.Overflow;
             text.verticalOverflow = VerticalWrapMode.Overflow;
+            text.supportRichText = false;
 
             RectTransform rect = text.rectTransform;
             rect.anchorMin = new Vector2(0.5f, 0.55f);
@@ -247,7 +278,7 @@ namespace ConditionalLog.Demo
                 return sprite;
             }
 
-            Log.Warning("Boot", $"missing sprite {spriteName}");
+            Log.Warning("Boot", DemoStrings.T("demo.log.missing_sprite", spriteName));
             return fallback;
         }
 

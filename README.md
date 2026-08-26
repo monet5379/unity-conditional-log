@@ -22,6 +22,7 @@ This repo’s Unity project already includes `Assets/ConditionalLog` and a filte
 - A player-build logging pipeline (use `Debug.Log*` directly for release messages)
 - Domain tag enums or a game-specific `GameLog` wrapper (those live in consumer code)
 - Treating Demo tags/enums as a shipping template
+- How to store or localize `Log.*` **message** bodies (call-site choice; one primary language is usually enough)
 
 ## Usage
 
@@ -61,8 +62,9 @@ Note (Korean): [Conditional logs and build cost](https://monet5379.github.io/not
 - **Levels:** In memory. `EditorPrefs` (`ConditionalLog.Level.*`). Default on. Re-read on editor load and when entering Play.
 - **Tags:** Unconfigured = on. A tagged `Log.*` must fire once in this domain before it appears in Settings/F1. Only **disabled** tags persist as CSV (`ConditionalLog.Tag.Disabled`). The known list is not persisted. After a domain reload, tags you did not disable drop off the list.
 - **F1 overlay:** Editor Play only. IMGUI (`Event`), no Input System. Needs Game view focus. This repo’s demo HUD shows `F1 — log filters` at the top.
+- **Package UI language:** Settings, overlay, and level labels use English by default (`ConditionalLogStrings`). Optional Korean is `ConditionalLogStrings.Ko.cs` — delete that file and the Korean branch in `Get` if you do not need it. This does **not** localize `Log.*` message arguments.
 - **Output:** Passed calls all use `Debug.Log`. They are not split into `LogWarning` / `LogError`, so design notes stay out of Unity’s warning/error channels. Console lines look like `<color>[Level]</color> [tag] message` (color on the level token only).
-- **Demo:** `Assets/Demo` playground. Sprites from [Brackeys’ Platformer Bundle](https://brackeysgames.itch.io/brackeys-platformer-bundle) (CC0; analogStudios_, RottingPixels). See `Assets/brackeys_platformer_assets/LICENSE & CREDITS.txt`.
+- **Demo:** `Assets/Demo` playground (not install). `DemoStrings` / `DemoStrings.Ko` show optional UI+log copy in this playground only — not a logging i18n template. Sprites from [Brackeys’ Platformer Bundle](https://brackeysgames.itch.io/brackeys-platformer-bundle) (CC0; analogStudios_, RottingPixels). See `Assets/brackeys_platformer_assets/LICENSE & CREDITS.txt`.
 
 ## License
 

@@ -42,13 +42,13 @@ namespace ConditionalLog.Demo
 
             if (_body == null)
             {
-                Log.Error("Runner", "jump skipped: no rigidbody");
+                Log.Error("Runner", DemoStrings.T("demo.log.jump_no_rb"));
                 return;
             }
 
             _body.linearVelocity = new Vector2(_body.linearVelocity.x, _jumpVelocity);
             _grounded = false;
-            Log.Info("Runner", "jump");
+            Log.Info("Runner", DemoStrings.T("demo.log.jump"));
         }
 
         private void FixedUpdate()

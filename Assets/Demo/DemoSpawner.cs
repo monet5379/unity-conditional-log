@@ -44,7 +44,7 @@ namespace ConditionalLog.Demo
         {
             if (_template == null || _crown == null || _trunk == null)
             {
-                Log.Error("Obstacle", "spawn skipped: template or sprite missing");
+                Log.Error("Obstacle", DemoStrings.T("demo.log.spawn_skipped"));
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace ConditionalLog.Demo
             DemoObstacle obstacle = instance.GetComponent<DemoObstacle>();
             obstacle.Bind(_game);
             obstacle.ApplyHeight(heightTiles, _crown, _trunk);
-            Log.Info("Obstacle", $"spawn height={heightTiles}");
+            Log.Info("Obstacle", DemoStrings.T("demo.log.spawn_height", heightTiles));
         }
     }
 }

@@ -150,11 +150,12 @@ namespace ConditionalLog
                 return;
             }
 
-            // ponytail: Unity 경고·에러 채널과 섞지 않음. 레벨은 접두사+색만.
+            // ponytail: Unity 경고·에러 채널과 섞지 않음. 레벨은 접두사+색만 (표시 언어 따름).
             string hex = LevelColor(level);
+            string levelLabel = ConditionalLogLocale.T(ConditionalLogStrings.LevelKey(level));
             string formatted = !string.IsNullOrEmpty(tag)
-                ? $"<color={hex}>[{level}]</color> [{tag}] {message}"
-                : $"<color={hex}>[{level}]</color> {message}";
+                ? $"<color={hex}>[{levelLabel}]</color> [{tag}] {message}"
+                : $"<color={hex}>[{levelLabel}]</color> {message}";
 
             UnityEngine.Debug.Log(formatted);
         }

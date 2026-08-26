@@ -62,24 +62,28 @@ namespace ConditionalLog
                 return;
             }
 
-            _windowRect = GUI.Window(GetInstanceID(), _windowRect, DrawWindow, "Conditional Log (F1)");
+            _windowRect = GUI.Window(
+                GetInstanceID(),
+                _windowRect,
+                DrawWindow,
+                ConditionalLogLocale.T("overlay.title"));
         }
 
         private void DrawWindow(int id)
         {
-            GUILayout.Label("Editor visibility only. Player builds strip Log.* via [Conditional].");
+            GUILayout.Label(ConditionalLogLocale.T("overlay.help"));
 
             _scroll = GUILayout.BeginScrollView(_scroll);
 
-            GUILayout.Label("Levels");
+            GUILayout.Label(ConditionalLogLocale.T("editor.levels"));
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("All On"))
+            if (GUILayout.Button(ConditionalLogLocale.T("editor.all_on")))
             {
                 Log.SetLogLevelAll();
                 LogOverlay.PersistLevels?.Invoke();
             }
 
-            if (GUILayout.Button("All Off"))
+            if (GUILayout.Button(ConditionalLogLocale.T("editor.all_off")))
             {
                 Log.SetLogLevelOff();
                 LogOverlay.PersistLevels?.Invoke();
@@ -87,19 +91,19 @@ namespace ConditionalLog
 
             GUILayout.EndHorizontal();
 
-            DrawLevel(Log.LogLevel.Progress, "Progress");
-            DrawLevel(Log.LogLevel.Info, "Info");
-            DrawLevel(Log.LogLevel.Warning, "Warning");
-            DrawLevel(Log.LogLevel.Error, "Error");
-            DrawLevel(Log.LogLevel.Except, "Except");
+            DrawLevel(Log.LogLevel.Progress);
+            DrawLevel(Log.LogLevel.Info);
+            DrawLevel(Log.LogLevel.Warning);
+            DrawLevel(Log.LogLevel.Error);
+            DrawLevel(Log.LogLevel.Except);
 
             GUILayout.Space(8f);
-            GUILayout.Label("Tags");
+            GUILayout.Label(ConditionalLogLocale.T("editor.tags"));
 
             List<string> known = LogTagFilter.GetKnownTags();
             if (known.Count == 0)
             {
-                GUILayout.Label("Tagged Log.* calls appear here.");
+                GUILayout.Label(ConditionalLogLocale.T("overlay.tags_empty"));
             }
             else
             {
@@ -113,10 +117,10 @@ namespace ConditionalLog
             GUI.DragWindow(new Rect(0f, 0f, 10000f, 20f));
         }
 
-        private static void DrawLevel(Log.LogLevel level, string label)
+        private static void DrawLevel(Log.LogLevel level)
         {
             bool enabled = Log.IsLevelEnabled(level);
-            bool next = GUILayout.Toggle(enabled, label);
+            bool next = GUILayout.Toggle(enabled, ConditionalLogLocale.T(ConditionalLogStrings.LevelKey(level)));
             if (next == enabled)
             {
                 return;

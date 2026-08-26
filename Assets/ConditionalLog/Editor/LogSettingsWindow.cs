@@ -16,20 +16,38 @@ namespace ConditionalLog.Editor
         [MenuItem(MenuPath)]
         private static void Open()
         {
-            GetWindow<LogSettingsWindow>("Log Settings");
+            var window = GetWindow<LogSettingsWindow>();
+            window.ApplyTitle();
+            window.Show();
         }
 
         private void OnEnable()
         {
             LogEditorBootstrap.Reload();
+            ConditionalLogLocale.LanguageChanged += OnLanguageChanged;
+            ApplyTitle();
+        }
+
+        private void OnDisable()
+        {
+            ConditionalLogLocale.LanguageChanged -= OnLanguageChanged;
+        }
+
+        private void OnLanguageChanged()
+        {
+            ApplyTitle();
+            Repaint();
+        }
+
+        private void ApplyTitle()
+        {
+            titleContent = new GUIContent(ConditionalLogLocale.T("editor.window_title"));
         }
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("Conditional Log", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox(
-                "Level and tag filters change editor visibility only. Player builds strip Log.* calls via [Conditional].",
-                MessageType.Info);
+            EditorGUILayout.LabelField(ConditionalLogLocale.T("editor.heading"), EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox(ConditionalLogLocale.T("editor.help"), MessageType.Info);
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
@@ -42,7 +60,10 @@ namespace ConditionalLog.Editor
 
         private void DrawLevelsSection()
         {
-            _levelsFoldout = EditorGUILayout.Foldout(_levelsFoldout, "Levels", true);
+            _levelsFoldout = EditorGUILayout.Foldout(
+                _levelsFoldout,
+                ConditionalLogLocale.T("editor.levels"),
+                true);
             if (!_levelsFoldout)
             {
                 return;
@@ -51,13 +72,13 @@ namespace ConditionalLog.Editor
             EditorGUI.indentLevel++;
 
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("All On"))
+            if (GUILayout.Button(ConditionalLogLocale.T("editor.all_on")))
             {
                 Log.SetLogLevelAll();
                 LogEditorPrefs.SaveLevels();
             }
 
-            if (GUILayout.Button("All Off"))
+            if (GUILayout.Button(ConditionalLogLocale.T("editor.all_off")))
             {
                 Log.SetLogLevelOff();
                 LogEditorPrefs.SaveLevels();
@@ -65,19 +86,19 @@ namespace ConditionalLog.Editor
 
             EditorGUILayout.EndHorizontal();
 
-            DrawLevelToggle(Log.LogLevel.Progress, "Progress");
-            DrawLevelToggle(Log.LogLevel.Info, "Info");
-            DrawLevelToggle(Log.LogLevel.Warning, "Warning");
-            DrawLevelToggle(Log.LogLevel.Error, "Error");
-            DrawLevelToggle(Log.LogLevel.Except, "Except");
+            DrawLevelToggle(Log.LogLevel.Progress, ConditionalLogStrings.LevelKey(Log.LogLevel.Progress));
+            DrawLevelToggle(Log.LogLevel.Info, ConditionalLogStrings.LevelKey(Log.LogLevel.Info));
+            DrawLevelToggle(Log.LogLevel.Warning, ConditionalLogStrings.LevelKey(Log.LogLevel.Warning));
+            DrawLevelToggle(Log.LogLevel.Error, ConditionalLogStrings.LevelKey(Log.LogLevel.Error));
+            DrawLevelToggle(Log.LogLevel.Except, ConditionalLogStrings.LevelKey(Log.LogLevel.Except));
 
             EditorGUI.indentLevel--;
         }
 
-        private void DrawLevelToggle(Log.LogLevel level, string label)
+        private void DrawLevelToggle(Log.LogLevel level, string labelKey)
         {
             bool enabled = Log.IsLevelEnabled(level);
-            bool next = EditorGUILayout.Toggle(label, enabled);
+            bool next = EditorGUILayout.Toggle(ConditionalLogLocale.T(labelKey), enabled);
             if (next == enabled)
             {
                 return;
@@ -89,7 +110,10 @@ namespace ConditionalLog.Editor
 
         private void DrawTagsSection()
         {
-            _tagsFoldout = EditorGUILayout.Foldout(_tagsFoldout, "Tags", true);
+            _tagsFoldout = EditorGUILayout.Foldout(
+                _tagsFoldout,
+                ConditionalLogLocale.T("editor.tags"),
+                true);
             if (!_tagsFoldout)
             {
                 return;
@@ -97,12 +121,14 @@ namespace ConditionalLog.Editor
 
             EditorGUI.indentLevel++;
 
-            _tagSearch = EditorGUILayout.TextField("Search", _tagSearch);
+            _tagSearch = EditorGUILayout.TextField(
+                ConditionalLogLocale.T("editor.search"),
+                _tagSearch);
 
             List<string> known = LogTagFilter.GetKnownTags();
             if (known.Count == 0)
             {
-                EditorGUILayout.HelpBox("No tags registered yet. Log with a tag to list it here.", MessageType.None);
+                EditorGUILayout.HelpBox(ConditionalLogLocale.T("editor.tags_empty"), MessageType.None);
                 EditorGUI.indentLevel--;
                 return;
             }
