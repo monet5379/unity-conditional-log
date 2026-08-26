@@ -4,6 +4,10 @@
 
 Editor-only Unity logging. Level and tag filters change console visibility in the editor only. `[Conditional("UNITY_EDITOR")]` strips `Log.*` calls and their argument evaluation from player builds.
 
+![Overview](docs/images/overview.png)
+
+Source: [`docs/diagrams/overview.mmd`](docs/diagrams/overview.mmd)
+
 ## Install
 
 Copy `unity-conditional-log/Assets/ConditionalLog` into your project `Assets/` (keep the Runtime/Editor asmdefs).
@@ -16,6 +20,11 @@ This repo’s Unity project already includes `Assets/ConditionalLog` and a filte
 - Tags are call-site strings. The copy unit has no domain tag enum — add an enum wrapper in game code if you need one.
 - Messages that must ship in release use `Debug.Log*` outside `Log`.
 - Do not put `$""` + `Log.*` on a hot path.
+
+## Limits
+
+- `[Conditional]` is gated on `UNITY_EDITOR` only. In the editor (including Play mode), turning a **level or tag off still evaluates call-site arguments** (`$""`, method calls, etc.) before `Write`’s early return. Filters hide console output; they do not skip argument evaluation while the editor is compiling those calls in.
+- This package does not add a second compile symbol or lazy/`Func<string>` message API to avoid that editor cost. Treat it as a current limit: keep heavy work off hot-path `Log.*` calls even when filters are off.
 
 ## Out of scope
 

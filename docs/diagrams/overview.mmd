@@ -1,0 +1,22 @@
+%%{init: {'theme':'dark'}}%%
+flowchart LR
+  G["Game code"] --> L["Log.Info(tag, message)"]
+
+  subgraph EDITOR["UNITY_EDITOR"]
+    direction LR
+    F["Level · tag filter"] --> A{"Allowed?"}
+    A -->|yes| DL["Debug.Log"] --> C["Console · visibility only"]
+    A -->|no| H["Hidden"]
+  end
+
+  subgraph PLAYER["Player build"]
+    direction LR
+    S["Call + arg eval stripped"] --> NL["No logging"]
+  end
+
+  L --> F
+  L --> S
+
+  NOTE["Filters ≠ compile stripping<br/>Filter OFF → call remains<br/>Conditional → call removed"]
+  C ~~~ NOTE
+  NL ~~~ NOTE

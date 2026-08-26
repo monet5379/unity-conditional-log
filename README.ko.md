@@ -4,6 +4,10 @@
 
 에디터 전용 Unity 로그예요. 레벨·태그 필터는 에디터 콘솔 가시성만 바꾸고, `[Conditional("UNITY_EDITOR")]`는 플레이어 빌드에서 `Log.*` 호출과 인자 평가를 제거해요.
 
+![개요](docs/images/overview.ko.png)
+
+정본: [`docs/diagrams/overview.ko.mmd`](docs/diagrams/overview.ko.mmd)
+
 ## 설치
 
 `unity-conditional-log/Assets/ConditionalLog`를 프로젝트 `Assets/`로 통째 복사해요 (Runtime/Editor asmdef 유지).
@@ -16,6 +20,11 @@
 - 태그는 호출부 문자열이에요. 복사 단위에는 도메인 enum이 없어요. 필요하면 게임 코드에 enum 래퍼를 두세요.
 - 릴리스에 남길 메시지는 `Log` 밖의 `Debug.Log*`를 쓰세요.
 - 핫 패스에 `$""` + `Log.*`를 두지 마세요.
+
+## 한계
+
+- `[Conditional]`은 `UNITY_EDITOR`에만 걸려 있어요. 에디터(Play 포함)에서는 **레벨·태그를 꺼도** 호출문은 남고, 호출부 인자(`$""`·계산 등)는 `Write` early return **전에** 평가돼요. 필터는 콘솔 출력만 막아요.
+- 에디터 쪽 그 비용을 없애려고 두 번째 컴파일 심볼이나 `Func<string>` 지연 메시지 API를 두지는 않아요. 필터를 꺼도 핫 패스 `Log.*`에 무거운 인자를 두지 않는 것이 이 패키지의 **현재 한계**예요.
 
 ## 이 패키지가 아닌 것
 

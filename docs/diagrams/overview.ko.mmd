@@ -1,0 +1,22 @@
+%%{init: {'theme':'dark'}}%%
+flowchart LR
+  G["게임 코드"] --> L["Log.Info(tag, message)"]
+
+  subgraph EDITOR["UNITY_EDITOR"]
+    direction LR
+    F["레벨 · 태그 필터"] --> A{"허용?"}
+    A -->|예| DL["Debug.Log"] --> C["콘솔 · 가시성만"]
+    A -->|아니오| H["숨김"]
+  end
+
+  subgraph PLAYER["플레이어 빌드"]
+    direction LR
+    S["호출 + 인자 평가 제거"] --> NL["로그 없음"]
+  end
+
+  L --> F
+  L --> S
+
+  NOTE["필터 ≠ 컴파일 제거<br/>필터 OFF → 호출 남음<br/>Conditional → 호출 제거"]
+  C ~~~ NOTE
+  NL ~~~ NOTE
