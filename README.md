@@ -1,41 +1,39 @@
 # Conditional Log
 
-**English** | [한국어](README.ko.md)
+에디터 전용 Unity 로그예요. 레벨·태그 필터는 에디터 콘솔 가시성만 바꾸고, `[Conditional("UNITY_EDITOR")]`는 플레이어 빌드에서 `Log.*` 호출과 인자 평가를 제거해요.
 
-Editor-only Unity logging. Level and tag filters change console visibility in the editor only. `[Conditional("UNITY_EDITOR")]` strips `Log.*` calls and their argument evaluation from player builds.
+![개요](docs/images/overview.ko.png)
 
-![Overview](docs/images/overview.png)
+정본: [`docs/diagrams/overview.ko.mmd`](docs/diagrams/overview.ko.mmd)
 
-Source: [`docs/diagrams/overview.mmd`](docs/diagrams/overview.mmd)
+## 설치
 
-## Install
+`unity-conditional-log/Assets/ConditionalLog`를 프로젝트 `Assets/`로 통째 복사해요 (Runtime/Editor asmdef 유지).
 
-Copy `unity-conditional-log/Assets/ConditionalLog` into your project `Assets/` (keep the Runtime/Editor asmdefs).
+이 저장소 Unity 프로젝트에는 이미 `Assets/ConditionalLog`와 필터 놀이터 `Assets/Demo`가 있어요. **Demo는 설치 대상이 아니에요.**
 
-This repo’s Unity project already includes `Assets/ConditionalLog` and a filter playground at `Assets/Demo`. **Demo is not part of the install.**
+## 불변조건
 
-## Invariants
+- 필터를 꺼도 컴파일 제거가 아니에요. 플레이어 호출을 지우는 것은 `[Conditional]`뿐이에요.
+- 태그는 호출부 문자열이에요. 복사 단위에는 도메인 enum이 없어요. 필요하면 게임 코드에 enum 래퍼를 두세요.
+- 릴리스에 남길 메시지는 `Log` 밖의 `Debug.Log*`를 쓰세요.
+- 핫 패스에 `$""` + `Log.*`를 두지 마세요.
 
-- Turning a filter off is not compile-time removal. Only `[Conditional]` removes player-build calls.
-- Tags are call-site strings. The copy unit has no domain tag enum — add an enum wrapper in game code if you need one.
-- Messages that must ship in release use `Debug.Log*` outside `Log`.
-- Do not put `$""` + `Log.*` on a hot path.
+## 한계
 
-## Limits
+- `[Conditional]`은 `UNITY_EDITOR`에만 걸려 있어요. 에디터(Play 포함)에서는 **레벨·태그를 꺼도** 호출문은 남고, 호출부 인자(`$""`·계산 등)는 `Write` early return **전에** 평가돼요. 필터는 콘솔 출력만 막아요.
+- 에디터 쪽 그 비용을 없애려고 두 번째 컴파일 심볼이나 `Func<string>` 지연 메시지 API를 두지는 않아요. 필터를 꺼도 핫 패스 `Log.*`에 무거운 인자를 두지 않는 것이 이 패키지의 **현재 한계**예요.
 
-- `[Conditional]` is gated on `UNITY_EDITOR` only. In the editor (including Play mode), turning a **level or tag off still evaluates call-site arguments** (`$""`, method calls, etc.) before `Write`’s early return. Filters hide console output; they do not skip argument evaluation while the editor is compiling those calls in.
-- This package does not add a second compile symbol or lazy/`Func<string>` message API to avoid that editor cost. Treat it as a current limit: keep heavy work off hot-path `Log.*` calls even when filters are off.
+## 이 패키지가 아닌 것
 
-## Out of scope
+- 플레이어 빌드용 로그 파이프라인 (릴리스 메시지는 `Debug.Log*` 직접)
+- 도메인 태그 enum·게임별 `GameLog` 래퍼 (소비 쪽 코드에 둠)
+- Demo의 태그/enum을 출시 템플릿으로 쓰는 것
+- `Log.*` **메시지 본문**을 어떻게 저장·다국어화할지 (호출부 선택; 보통 주언어 하나로 충분해요)
 
-- A player-build logging pipeline (use `Debug.Log*` directly for release messages)
-- Domain tag enums or a game-specific `GameLog` wrapper (those live in consumer code)
-- Treating Demo tags/enums as a shipping template
-- How to store or localize `Log.*` **message** bodies (call-site choice; one primary language is usually enough)
+## 사용
 
-## Usage
-
-The API is `ConditionalLog.Log`. Keep tag strings and wrappers in **game code**.
+API는 `ConditionalLog.Log`예요. 태그 문자열과 래퍼는 **게임 코드**에 두세요.
 
 ```csharp
 using System.Diagnostics;
@@ -55,28 +53,26 @@ public static class GameLog
 GameLog.Info(GameLog.Combat, $"dmg={damage}");
 ```
 
-Without `[Conditional("UNITY_EDITOR")]` on the wrapper, interpolated strings at the call site are still evaluated in player builds.
+래퍼에 `[Conditional("UNITY_EDITOR")]`가 없으면 호출부의 보간 문자열이 플레이어 빌드에서 그대로 평가돼요.
 
-Menu: **Conditional Log → Settings**. In Play mode, **F1** opens the overlay.
+메뉴: **Conditional Log → Settings**. Play에서는 **F1** 오버레이.
 
 ![Log Settings](docs/images/settings.png)
 
-![F1 overlay (Play)](docs/images/f1-overlay.png)
+![F1 오버레이 (Play)](docs/images/f1-overlay.png)
 
-Note (Korean): [Conditional logs and build cost](https://monet5379.github.io/notes/conditional-log-build-cost/)
+글: [Conditional 로그와 빌드 비용](https://monet5379.github.io/notes/conditional-log-build-cost/)
 
-## Design notes
+## 현재 설계
 
-- **Compile stripping:** `Log.Progress` / `Info` / `Warning` / `Error` / `Except` only. Filters do not remove call sites.
-- **Levels:** In memory. `EditorPrefs` (`ConditionalLog.Level.*`). Default on. Re-read on editor load and when entering Play.
-- **Tags:** Unconfigured = on. A tagged `Log.*` must fire once in this domain before it appears in Settings/F1. Only **disabled** tags persist as CSV (`ConditionalLog.Tag.Disabled`). The known list is not persisted. After a domain reload, tags you did not disable drop off the list.
-- **F1 overlay:** Editor Play only. IMGUI (`Event`), no Input System. Needs Game view focus. This repo’s demo HUD shows `F1 — log filters` at the top.
-- **Package UI language:** Settings, overlay, and level labels use English by default (`ConditionalLogStrings`). Optional Korean is `ConditionalLogStrings.Ko.cs` — delete that file and the Korean branch in `Get` if you do not need it. This does **not** localize `Log.*` message arguments.
-- **Output:** Passed calls all use `Debug.Log`. They are not split into `LogWarning` / `LogError`, so design notes stay out of Unity’s warning/error channels. Console lines look like `<color>[Level]</color> [tag] message` (color on the level token only).
-- **Demo:** `Assets/Demo` playground (not install). `DemoStrings` / `DemoStrings.Ko` show optional UI+log copy in this playground only — not a logging i18n template. Sprites from [Brackeys’ Platformer Bundle](https://brackeysgames.itch.io/brackeys-platformer-bundle) (CC0; analogStudios_, RottingPixels). See `Assets/brackeys_platformer_assets/LICENSE & CREDITS.txt`.
+- **컴파일 제거:** `Log.Progress` / `Info` / `Warning` / `Error` / `Except`만. 필터는 호출문을 지우지 않아요.
+- **레벨:** 메모리. `EditorPrefs` (`ConditionalLog.Level.*`). 기본 on. 에디터 로드·Play 진입 시 다시 읽어요.
+- **태그:** 미설정 = on. 태그 있는 `Log.*`가 이 도메인에서 한 번 나가야 Settings/F1에 나타나요. **비활성** 태그만 CSV로 persist (`ConditionalLog.Tag.Disabled`). Known 목록은 persist하지 않아요. 도메인 리로드 후, 꺼 두지 않은 태그는 목록에서 사라져요.
+- **F1 오버레이:** 에디터 Play만. IMGUI (`Event`), Input System 없음. Game 뷰 포커스. 이 저장소 데모 HUD 상단에 `F1 — log filters`를 띄워요.
+- **패키지 UI 언어:** Settings·오버레이·레벨 라벨은 영어 기본 (`ConditionalLogStrings`). 한글은 선택 파일 `ConditionalLogStrings.Ko.cs` — 필요 없으면 그 파일과 `Get`의 Korean 분기를 지우면 돼요. `Log.*` **인자 메시지**는 로컬라이즈하지 않아요.
+- **출력:** 통과한 호출은 모두 `Debug.Log`예요. `LogWarning` / `LogError`로 나누지 않아 설계 메모가 Unity 경고·에러 채널과 섞이지 않아요. 콘솔 줄은 `<color>[Level]</color> [tag] message` (레벨 토큰만 색).
+- **데모:** `Assets/Demo` 놀이터 (설치 대상 아님). `DemoStrings` / `DemoStrings.Ko`는 이 놀이터에서 UI·로그 문구를 붙인 **예시**일 뿐, 로그 i18n 템플릿이 아니에요. 스프라이트는 [Brackeys’ Platformer Bundle](https://brackeysgames.itch.io/brackeys-platformer-bundle) (CC0; analogStudios_, RottingPixels). `Assets/brackeys_platformer_assets/LICENSE & CREDITS.txt`.
 
-## License
+## 라이선스
 
 [MIT](LICENSE)
-
-English prose may be AI-assisted. If wording conflicts, prefer the [Korean README](README.ko.md) or the code.
