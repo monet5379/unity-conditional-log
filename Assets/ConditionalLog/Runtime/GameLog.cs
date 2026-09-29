@@ -2,8 +2,17 @@ using System.Diagnostics;
 
 namespace ConditionalLog
 {
+    public enum GameLogTags
+    {
+        None = 0,
+        Boot,
+        Hud,
+        Obstacle,
+        Runner,
+    }
+
     // ponytail: 에디터 전용 개발 로그. 레벨은 메모리만. persist는 Editor.
-    public static class Log
+    public static class GameLog
     {
         public static bool LevelProgress { get; private set; } = true;
         public static bool LevelInfo { get; private set; } = true;
@@ -67,11 +76,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Progress(string message)
         {
-            Write(LogLevel.Progress, null, message);
+            Write(LogLevel.Progress, GameLogTags.None, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Progress(string tag, string message)
+        public static void Progress(GameLogTags tag, string message)
         {
             Write(LogLevel.Progress, tag, message);
         }
@@ -79,11 +88,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Info(string message)
         {
-            Write(LogLevel.Info, null, message);
+            Write(LogLevel.Info, GameLogTags.None, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Info(string tag, string message)
+        public static void Info(GameLogTags tag, string message)
         {
             Write(LogLevel.Info, tag, message);
         }
@@ -91,11 +100,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Warning(string message)
         {
-            Write(LogLevel.Warning, null, message);
+            Write(LogLevel.Warning, GameLogTags.None, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Warning(string tag, string message)
+        public static void Warning(GameLogTags tag, string message)
         {
             Write(LogLevel.Warning, tag, message);
         }
@@ -103,11 +112,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Error(string message)
         {
-            Write(LogLevel.Error, null, message);
+            Write(LogLevel.Error, GameLogTags.None, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Error(string tag, string message)
+        public static void Error(GameLogTags tag, string message)
         {
             Write(LogLevel.Error, tag, message);
         }
@@ -115,11 +124,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Except(string message)
         {
-            Write(LogLevel.Except, null, message);
+            Write(LogLevel.Except, GameLogTags.None, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Except(string tag, string message)
+        public static void Except(GameLogTags tag, string message)
         {
             Write(LogLevel.Except, tag, message);
         }
@@ -133,29 +142,26 @@ namespace ConditionalLog
             Except,
         }
 
-        private static void Write(LogLevel level, string tag, string message)
+        private static void Write(LogLevel level, GameLogTags tag, string message)
         {
-            if (!string.IsNullOrEmpty(tag))
-            {
-                LogTagFilter.Register(tag);
-            }
-
             if (!IsLevelEnabled(level))
             {
                 return;
             }
 
-            if (!LogTagFilter.IsEnabled(tag))
+            if (tag != GameLogTags.None && !LogTagFilter.IsEnabled(tag))
             {
                 return;
             }
 
-            // ponytail: Unity 경고·에러 채널과 섞지 않음. 레벨은 접두사+색만 (표시 언어 따름).
-            string hex = LevelColor(level);
+            // ponytail: Unity 경고·에러 채널과 섞지 않음. Info는 기본색, 그 외 레벨만 색을 입힘 (표시 언어 따름).
             string levelLabel = ConditionalLogLocale.T(ConditionalLogStrings.LevelKey(level));
-            string formatted = !string.IsNullOrEmpty(tag)
-                ? $"<color={hex}>[{levelLabel}]</color> [{tag}] {message}"
-                : $"<color={hex}>[{levelLabel}]</color> {message}";
+            string body = tag != GameLogTags.None
+                ? $"[{levelLabel}] [{tag}] {message}"
+                : $"[{levelLabel}] {message}";
+            string formatted = level == LogLevel.Info
+                ? body
+                : $"<color={LevelColor(level)}>{body}</color>";
 
             UnityEngine.Debug.Log(formatted);
         }
@@ -165,11 +171,10 @@ namespace ConditionalLog
             return level switch
             {
                 LogLevel.Progress => "#6B8E23",
-                LogLevel.Info => "#7FDBFF",
                 LogLevel.Warning => "#FFD54F",
                 LogLevel.Error => "#E57373",
                 LogLevel.Except => "#4169E1",
-                _ => "#7FDBFF",
+                _ => "#FFFFFF",
             };
         }
     }

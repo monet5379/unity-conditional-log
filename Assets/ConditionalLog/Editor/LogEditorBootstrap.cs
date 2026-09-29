@@ -24,11 +24,11 @@ namespace ConditionalLog.Editor
 
         internal static void Reload()
         {
-            Log.SetLevel(Log.LogLevel.Progress, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(Log.LogLevel.Progress), true));
-            Log.SetLevel(Log.LogLevel.Info, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(Log.LogLevel.Info), true));
-            Log.SetLevel(Log.LogLevel.Warning, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(Log.LogLevel.Warning), true));
-            Log.SetLevel(Log.LogLevel.Error, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(Log.LogLevel.Error), true));
-            Log.SetLevel(Log.LogLevel.Except, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(Log.LogLevel.Except), true));
+            GameLog.SetLevel(GameLog.LogLevel.Progress, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(GameLog.LogLevel.Progress), true));
+            GameLog.SetLevel(GameLog.LogLevel.Info, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(GameLog.LogLevel.Info), true));
+            GameLog.SetLevel(GameLog.LogLevel.Warning, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(GameLog.LogLevel.Warning), true));
+            GameLog.SetLevel(GameLog.LogLevel.Error, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(GameLog.LogLevel.Error), true));
+            GameLog.SetLevel(GameLog.LogLevel.Except, EditorPrefs.GetBool(LogEditorPrefs.LevelKey(GameLog.LogLevel.Except), true));
             LogTagFilter.ApplyDisabled(LogEditorPrefs.LoadDisabledTags());
         }
     }

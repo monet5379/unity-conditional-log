@@ -4,7 +4,7 @@ namespace ConditionalLog
 {
     /// <summary>
     /// Package UI strings for Settings / overlay / level labels (English).
-    /// Optional Korean: <c>ConditionalLogStrings.Ko.cs</c>. Does not localize <c>Log.*</c> message bodies.
+    /// Optional Korean: <c>ConditionalLogStrings.Ko.cs</c>. Does not localize <c>GameLog.*</c> message bodies.
     /// </summary>
     public static class ConditionalLogStrings
     {
@@ -13,20 +13,16 @@ namespace ConditionalLog
             { "editor.window_title", "Log Settings" },
             { "editor.heading", "Conditional Log" },
             { "editor.help",
-                "Level and tag filters change editor visibility only. Player builds strip Log.* calls via [Conditional]." },
+                "Level and tag filters change editor visibility only. Player builds strip GameLog.* calls via [Conditional]." },
             { "editor.levels", "Levels" },
             { "editor.tags", "Tags" },
             { "editor.all_on", "All On" },
             { "editor.all_off", "All Off" },
             { "editor.search", "Search" },
-            { "editor.tags_empty",
-                "No tags registered yet. Log with a tag to list it here." },
 
             { "overlay.title", "Conditional Log (F1)" },
             { "overlay.help",
-                "Editor visibility only. Player builds strip Log.* via [Conditional]." },
-            { "overlay.tags_empty",
-                "Tagged Log.* calls appear here." },
+                "Editor visibility only. Player builds strip GameLog.* via [Conditional]." },
 
             { "level.progress", "Progress" },
             { "level.info", "Info" },
@@ -51,15 +47,15 @@ namespace ConditionalLog
             return key;
         }
 
-        public static string LevelKey(Log.LogLevel level)
+        public static string LevelKey(GameLog.LogLevel level)
         {
             return level switch
             {
-                Log.LogLevel.Progress => "level.progress",
-                Log.LogLevel.Info => "level.info",
-                Log.LogLevel.Warning => "level.warning",
-                Log.LogLevel.Error => "level.error",
-                Log.LogLevel.Except => "level.except",
+                GameLog.LogLevel.Progress => "level.progress",
+                GameLog.LogLevel.Info => "level.info",
+                GameLog.LogLevel.Warning => "level.warning",
+                GameLog.LogLevel.Error => "level.error",
+                GameLog.LogLevel.Except => "level.except",
                 _ => "level.info",
             };
         }

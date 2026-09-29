@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -74,37 +74,37 @@ namespace ConditionalLog.Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(ConditionalLogLocale.T("editor.all_on")))
             {
-                Log.SetLogLevelAll();
+                GameLog.SetLogLevelAll();
                 LogEditorPrefs.SaveLevels();
             }
 
             if (GUILayout.Button(ConditionalLogLocale.T("editor.all_off")))
             {
-                Log.SetLogLevelOff();
+                GameLog.SetLogLevelOff();
                 LogEditorPrefs.SaveLevels();
             }
 
             EditorGUILayout.EndHorizontal();
 
-            DrawLevelToggle(Log.LogLevel.Progress, ConditionalLogStrings.LevelKey(Log.LogLevel.Progress));
-            DrawLevelToggle(Log.LogLevel.Info, ConditionalLogStrings.LevelKey(Log.LogLevel.Info));
-            DrawLevelToggle(Log.LogLevel.Warning, ConditionalLogStrings.LevelKey(Log.LogLevel.Warning));
-            DrawLevelToggle(Log.LogLevel.Error, ConditionalLogStrings.LevelKey(Log.LogLevel.Error));
-            DrawLevelToggle(Log.LogLevel.Except, ConditionalLogStrings.LevelKey(Log.LogLevel.Except));
+            DrawLevelToggle(GameLog.LogLevel.Progress, ConditionalLogStrings.LevelKey(GameLog.LogLevel.Progress));
+            DrawLevelToggle(GameLog.LogLevel.Info, ConditionalLogStrings.LevelKey(GameLog.LogLevel.Info));
+            DrawLevelToggle(GameLog.LogLevel.Warning, ConditionalLogStrings.LevelKey(GameLog.LogLevel.Warning));
+            DrawLevelToggle(GameLog.LogLevel.Error, ConditionalLogStrings.LevelKey(GameLog.LogLevel.Error));
+            DrawLevelToggle(GameLog.LogLevel.Except, ConditionalLogStrings.LevelKey(GameLog.LogLevel.Except));
 
             EditorGUI.indentLevel--;
         }
 
-        private void DrawLevelToggle(Log.LogLevel level, string labelKey)
+        private void DrawLevelToggle(GameLog.LogLevel level, string labelKey)
         {
-            bool enabled = Log.IsLevelEnabled(level);
+            bool enabled = GameLog.IsLevelEnabled(level);
             bool next = EditorGUILayout.Toggle(ConditionalLogLocale.T(labelKey), enabled);
             if (next == enabled)
             {
                 return;
             }
 
-            Log.SetLevel(level, next);
+            GameLog.SetLevel(level, next);
             LogEditorPrefs.SaveLevels();
         }
 
@@ -125,25 +125,22 @@ namespace ConditionalLog.Editor
                 ConditionalLogLocale.T("editor.search"),
                 _tagSearch);
 
-            List<string> known = LogTagFilter.GetKnownTags();
-            if (known.Count == 0)
-            {
-                EditorGUILayout.HelpBox(ConditionalLogLocale.T("editor.tags_empty"), MessageType.None);
-                EditorGUI.indentLevel--;
-                return;
-            }
-
             string search = _tagSearch?.Trim() ?? string.Empty;
-            for (int i = 0; i < known.Count; i++)
+            foreach (GameLogTags tag in Enum.GetValues(typeof(GameLogTags)))
             {
-                string tag = known[i];
-                if (search.Length > 0 && tag.IndexOf(search, System.StringComparison.OrdinalIgnoreCase) < 0)
+                if (tag == GameLogTags.None)
+                {
+                    continue;
+                }
+
+                string label = tag.ToString();
+                if (search.Length > 0 && label.IndexOf(search, StringComparison.OrdinalIgnoreCase) < 0)
                 {
                     continue;
                 }
 
                 bool enabled = LogTagFilter.IsEnabled(tag);
-                bool next = EditorGUILayout.Toggle(tag, enabled);
+                bool next = EditorGUILayout.Toggle(label, enabled);
                 if (next == enabled)
                 {
                     continue;

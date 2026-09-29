@@ -5,22 +5,11 @@ namespace ConditionalLog
     // ponytail: 미설정=on. 비활성 태그만 보관. CSV/EditorPrefs는 Editor.
     public static class LogTagFilter
     {
-        private static readonly HashSet<string> Disabled = new HashSet<string>();
-        private static readonly HashSet<string> Known = new HashSet<string>();
+        private static readonly HashSet<GameLogTags> Disabled = new HashSet<GameLogTags>();
 
-        public static void Register(string tag)
+        public static bool IsEnabled(GameLogTags tag)
         {
-            if (string.IsNullOrEmpty(tag))
-            {
-                return;
-            }
-
-            Known.Add(tag);
-        }
-
-        public static bool IsEnabled(string tag)
-        {
-            if (string.IsNullOrEmpty(tag))
+            if (tag == GameLogTags.None)
             {
                 return true;
             }
@@ -28,14 +17,12 @@ namespace ConditionalLog
             return !Disabled.Contains(tag);
         }
 
-        public static void SetEnabled(string tag, bool enabled)
+        public static void SetEnabled(GameLogTags tag, bool enabled)
         {
-            if (string.IsNullOrEmpty(tag))
+            if (tag == GameLogTags.None)
             {
                 return;
             }
-
-            Register(tag);
 
             if (enabled)
             {
@@ -47,7 +34,7 @@ namespace ConditionalLog
             }
         }
 
-        public static void ApplyDisabled(IEnumerable<string> tags)
+        public static void ApplyDisabled(IEnumerable<GameLogTags> tags)
         {
             Disabled.Clear();
 
@@ -56,29 +43,21 @@ namespace ConditionalLog
                 return;
             }
 
-            foreach (string tag in tags)
+            foreach (GameLogTags tag in tags)
             {
-                if (string.IsNullOrEmpty(tag))
+                if (tag == GameLogTags.None)
                 {
                     continue;
                 }
 
                 Disabled.Add(tag);
-                Known.Add(tag);
             }
         }
 
-        public static List<string> GetKnownTags()
+        public static List<GameLogTags> GetDisabledTags()
         {
-            var list = new List<string>(Known);
-            list.Sort(System.StringComparer.Ordinal);
-            return list;
-        }
-
-        public static List<string> GetDisabledTags()
-        {
-            var list = new List<string>(Disabled);
-            list.Sort(System.StringComparer.Ordinal);
+            var list = new List<GameLogTags>(Disabled);
+            list.Sort((a, b) => string.CompareOrdinal(a.ToString(), b.ToString()));
             return list;
         }
     }

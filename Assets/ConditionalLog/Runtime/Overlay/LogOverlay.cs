@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ConditionalLog
@@ -79,61 +78,58 @@ namespace ConditionalLog
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(ConditionalLogLocale.T("editor.all_on")))
             {
-                Log.SetLogLevelAll();
+                GameLog.SetLogLevelAll();
                 LogOverlay.PersistLevels?.Invoke();
             }
 
             if (GUILayout.Button(ConditionalLogLocale.T("editor.all_off")))
             {
-                Log.SetLogLevelOff();
+                GameLog.SetLogLevelOff();
                 LogOverlay.PersistLevels?.Invoke();
             }
 
             GUILayout.EndHorizontal();
 
-            DrawLevel(Log.LogLevel.Progress);
-            DrawLevel(Log.LogLevel.Info);
-            DrawLevel(Log.LogLevel.Warning);
-            DrawLevel(Log.LogLevel.Error);
-            DrawLevel(Log.LogLevel.Except);
+            DrawLevel(GameLog.LogLevel.Progress);
+            DrawLevel(GameLog.LogLevel.Info);
+            DrawLevel(GameLog.LogLevel.Warning);
+            DrawLevel(GameLog.LogLevel.Error);
+            DrawLevel(GameLog.LogLevel.Except);
 
             GUILayout.Space(8f);
             GUILayout.Label(ConditionalLogLocale.T("editor.tags"));
 
-            List<string> known = LogTagFilter.GetKnownTags();
-            if (known.Count == 0)
+            foreach (GameLogTags tag in Enum.GetValues(typeof(GameLogTags)))
             {
-                GUILayout.Label(ConditionalLogLocale.T("overlay.tags_empty"));
-            }
-            else
-            {
-                for (int i = 0; i < known.Count; i++)
+                if (tag == GameLogTags.None)
                 {
-                    DrawTag(known[i]);
+                    continue;
                 }
+
+                DrawTag(tag);
             }
 
             GUILayout.EndScrollView();
             GUI.DragWindow(new Rect(0f, 0f, 10000f, 20f));
         }
 
-        private static void DrawLevel(Log.LogLevel level)
+        private static void DrawLevel(GameLog.LogLevel level)
         {
-            bool enabled = Log.IsLevelEnabled(level);
+            bool enabled = GameLog.IsLevelEnabled(level);
             bool next = GUILayout.Toggle(enabled, ConditionalLogLocale.T(ConditionalLogStrings.LevelKey(level)));
             if (next == enabled)
             {
                 return;
             }
 
-            Log.SetLevel(level, next);
+            GameLog.SetLevel(level, next);
             LogOverlay.PersistLevels?.Invoke();
         }
 
-        private static void DrawTag(string tag)
+        private static void DrawTag(GameLogTags tag)
         {
             bool enabled = LogTagFilter.IsEnabled(tag);
-            bool next = GUILayout.Toggle(enabled, tag);
+            bool next = GUILayout.Toggle(enabled, tag.ToString());
             if (next == enabled)
             {
                 return;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
@@ -9,23 +10,23 @@ namespace ConditionalLog.Editor
         public const string Prefix = "ConditionalLog.";
         public const string TagDisabled = Prefix + "Tag.Disabled";
 
-        public static string LevelKey(Log.LogLevel level)
+        public static string LevelKey(GameLog.LogLevel level)
         {
             return Prefix + "Level." + level;
         }
 
         public static void SaveLevels()
         {
-            EditorPrefs.SetBool(LevelKey(Log.LogLevel.Progress), Log.LevelProgress);
-            EditorPrefs.SetBool(LevelKey(Log.LogLevel.Info), Log.LevelInfo);
-            EditorPrefs.SetBool(LevelKey(Log.LogLevel.Warning), Log.LevelWarning);
-            EditorPrefs.SetBool(LevelKey(Log.LogLevel.Error), Log.LevelError);
-            EditorPrefs.SetBool(LevelKey(Log.LogLevel.Except), Log.LevelExcept);
+            EditorPrefs.SetBool(LevelKey(GameLog.LogLevel.Progress), GameLog.LevelProgress);
+            EditorPrefs.SetBool(LevelKey(GameLog.LogLevel.Info), GameLog.LevelInfo);
+            EditorPrefs.SetBool(LevelKey(GameLog.LogLevel.Warning), GameLog.LevelWarning);
+            EditorPrefs.SetBool(LevelKey(GameLog.LogLevel.Error), GameLog.LevelError);
+            EditorPrefs.SetBool(LevelKey(GameLog.LogLevel.Except), GameLog.LevelExcept);
         }
 
         public static void SaveTags()
         {
-            List<string> disabled = LogTagFilter.GetDisabledTags();
+            List<GameLogTags> disabled = LogTagFilter.GetDisabledTags();
             var builder = new StringBuilder();
             for (int i = 0; i < disabled.Count; i++)
             {
@@ -40,7 +41,7 @@ namespace ConditionalLog.Editor
             EditorPrefs.SetString(TagDisabled, builder.ToString());
         }
 
-        public static IEnumerable<string> LoadDisabledTags()
+        public static IEnumerable<GameLogTags> LoadDisabledTags()
         {
             string raw = EditorPrefs.GetString(TagDisabled, string.Empty);
             if (string.IsNullOrEmpty(raw))
@@ -51,8 +52,13 @@ namespace ConditionalLog.Editor
             string[] parts = raw.Split(',');
             for (int i = 0; i < parts.Length; i++)
             {
-                string tag = parts[i].Trim();
-                if (!string.IsNullOrEmpty(tag))
+                string name = parts[i].Trim();
+                if (string.IsNullOrEmpty(name))
+                {
+                    continue;
+                }
+
+                if (Enum.TryParse(name, out GameLogTags tag) && tag != GameLogTags.None)
                 {
                     yield return tag;
                 }

@@ -1,6 +1,6 @@
 %%{init: {'theme':'dark'}}%%
 flowchart LR
-  G["Game code"] --> L["Log.Info(tag, message)"]
+  G["Game code"] --> L["GameLog.Info(GameLogTags, message)"]
 
   subgraph EDITOR["UNITY_EDITOR"]
     direction LR
