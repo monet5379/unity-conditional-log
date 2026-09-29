@@ -47,8 +47,6 @@ GameLog.Info($"boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
 
 ![Log Settings](docs/images/settings.png)
 
-![F1 오버레이 (Play)](docs/images/f1-overlay.png)
-
 글: [Conditional 로그와 빌드 비용](https://monet5379.github.io/notes/conditional-log-build-cost/)
 
 ## 현재 설계
