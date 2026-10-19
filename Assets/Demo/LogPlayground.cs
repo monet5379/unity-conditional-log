@@ -12,8 +12,6 @@ namespace ConditionalLog.Demo
 
         private void OnGUI()
         {
-            GUI.Label(new Rect(10f, 10f, 400f, 24f), "F1 — log filters");
-
             Event current = Event.current;
             if (current.type == EventType.KeyDown && current.keyCode == KeyCode.Space)
             {
