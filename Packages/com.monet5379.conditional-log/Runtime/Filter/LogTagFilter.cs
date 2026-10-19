@@ -39,6 +39,25 @@ namespace ConditionalLog
             }
         }
 
+        public static void SetAllEnabled()
+        {
+            Disabled.Clear();
+        }
+
+        public static void SetAllDisabled()
+        {
+            for (int i = 0; i < KnownTagsInternal.Count; i++)
+            {
+                LogTag tag = KnownTagsInternal[i];
+                if (tag.IsNone)
+                {
+                    continue;
+                }
+
+                Disabled.Add(tag.Name);
+            }
+        }
+
         public static void ApplyDisabled(IEnumerable<string> tagNames)
         {
             Disabled.Clear();

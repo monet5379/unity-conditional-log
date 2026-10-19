@@ -7,7 +7,7 @@ namespace ConditionalLog.Editor
 {
     internal sealed class LogSettingsWindow : EditorWindow
     {
-        private const string MenuPath = "Conditional Log/Settings";
+        private const string MenuPath = "Tools/Conditional Log/Settings";
 
         private Vector2 _scroll;
         private string _tagSearch = string.Empty;
@@ -117,6 +117,21 @@ namespace ConditionalLog.Editor
             }
 
             EditorGUI.indentLevel++;
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button(ConditionalLogLocale.T("editor.all_on")))
+            {
+                LogTagFilter.SetAllEnabled();
+                LogEditorPrefs.SaveTags();
+            }
+
+            if (GUILayout.Button(ConditionalLogLocale.T("editor.all_off")))
+            {
+                LogTagFilter.SetAllDisabled();
+                LogEditorPrefs.SaveTags();
+            }
+
+            EditorGUILayout.EndHorizontal();
 
             _tagSearch = EditorGUILayout.TextField(
                 ConditionalLogLocale.T("editor.search"),

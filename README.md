@@ -20,7 +20,7 @@
 Package Manager → **Install package from git URL**:
 
 ```text
-https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.0
+https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.1
 ```
 
 ### 로컬 임베디드
@@ -32,7 +32,7 @@ https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5
 > [!NOTE]
 > **이 repo에서 확인 (선택)**
 >
-> - Unity로 repo 루트를 연다 → `Assets/Scenes/SampleScene` Play → `Assets/Demo/LogPlayground`가 샘플 로그를 보낸다. **Space**로 반복. 필터는 **Conditional Log → Settings**.
+> - Unity로 repo 루트를 연다 → `Assets/Scenes/SampleScene` Play → `Assets/Demo/LogPlayground`가 샘플 로그를 보낸다. **Space**로 반복. 필터는 **Tools → Conditional Log → Settings**.
 > - `Assets/Demo`는 **패키지·설치 대상이 아니다.** Demo asmdef `ConditionalLog.Demo`가 **`ConditionalLog.Runtime`** (`Packages/.../Runtime/ConditionalLog.Runtime.asmdef`)을 참조해야 한다 — Inspector 참조가 비어 있으면 Console에 `LogTag` CS0246이 난다.
 > - Settings의 **`Test`** 태그는 Edit Mode 테스트용 카탈로그 프로브이며 Demo `Boot`/`Hud` 등과 별개이다.
 
@@ -54,7 +54,7 @@ persist 키·출력 포맷·UI 문자열: [Architecture_ConditionalLog](docs/arc
 
 - 플레이어 빌드용 로그 파이프라인 (릴리스 메시지는 `Debug.Log*` 직접)
 - 패키지가 대신 정의해 주는 태그 목록 (프로젝트 카탈로그 클래스에 맞게 선언한다)
-- Play Mode IMGUI 필터 오버레이 (필터는 **Conditional Log → Settings**만)
+- Play Mode IMGUI 필터 오버레이 (필터는 **Tools → Conditional Log → Settings**만)
 - Settings·패키지 UI **언어 전환** (`level.*` 콘솔·토글 라벨은 영어, 그 외 Settings UI 문자열은 한글 고정)
 - `GameLog.*` **메시지 본문** 저장·다국어화 (호출부 선택; 보통 주언어 하나로 충분하다)
 
@@ -76,7 +76,7 @@ GameLog.Info("boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
 
 카탈로그·`GameLog` 호출 코드가 **자체 asmdef** 안이면 그 asmdef가 **`ConditionalLog.Runtime`을 참조**해야 한다. asmdef 없이 기본 `Assembly-CSharp`만 쓰면 `autoReferenced`로 잡힌다. 자세한 절차는 [패키지 README — 태그 카탈로그](Packages/com.monet5379.conditional-log/README.md#태그-카탈로그).
 
-메뉴 **Conditional Log → Settings**.
+메뉴 **Tools → Conditional Log → Settings**.
 
 ![Log Settings](docs/images/settings.png)
 

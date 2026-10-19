@@ -19,7 +19,7 @@ Conditional Log는 `Packages/com.monet5379.conditional-log/` UPM 패키지의 �
 ### 포함 범위 (In Scope)
 
 - `GameLog` public API · 레벨·태그 필터 · `Debug.Log` 출력 포맷
-- Editor: **Conditional Log → Settings** (유일한 필터 UI), `EditorPrefs` persist
+- Editor: **Tools → Conditional Log → Settings** (유일한 필터 UI), `EditorPrefs` persist
 - 패키지 UI 문자열: `ConditionalLogStrings` (한글, `level.*`·`level.*.desc`만 영어) · `ConditionalLogLocale.T` → `Get`
 - 이 repo `Assets/Demo` — 필터 놀이터 (**설치·복사 대상 아님**)
 
@@ -94,7 +94,7 @@ flowchart TB
 
 1. `Reload()`: `EditorPrefs` bool (`ConditionalLog.Level.<LogLevel>`) → `GameLog.SetLevel`; `TypeCache` + `[LogTagCatalog]` static class의 `LogTag` 필드 수집 → `LogTagFilter.SetKnownTags`; disabled 태그 이름 CSV (`ConditionalLog.Tag.Disabled`) → `LogTagFilter.ApplyDisabled`.
 2. Edit Mode 진입 · Play Mode 진입 시 `Reload()` 재실행.
-3. **Settings** (`LogSettingsWindow`): 레벨·태그 토글 변경마다 `SaveLevels` 또는 `SaveTags`. 레벨 **전부 켜기/끄기**는 `GameLog.SetLogLevelAll` / `SetLogLevelOff` 후 `SaveLevels`. 태그는 `KnownTags` 목록을 한 줄씩 토글한다.
+3. **Settings** (`LogSettingsWindow`): 레벨·태그 토글 변경마다 `SaveLevels` 또는 `SaveTags`. 레벨 **전부 켜기/끄기**는 `GameLog.SetLogLevelAll` / `SetLogLevelOff` 후 `SaveLevels`. 태그 **전부 켜기/끄기**는 `LogTagFilter.SetAllEnabled` / `SetAllDisabled` 후 `SaveTags`. 그 외 태그는 `KnownTags` 목록을 한 줄씩 토글한다.
 
 ### persist 키 (`LogEditorPrefs`)
 

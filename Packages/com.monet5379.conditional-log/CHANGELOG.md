@@ -4,6 +4,20 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-20
+
+### Added
+
+- `LogTagFilter.SetAllEnabled` / `SetAllDisabled` · Settings 태그 섹션 **전부 켜기/끄기** 버튼.
+
+### Changed
+
+- Settings 메뉴: 최상위 **Conditional Log** → **Tools → Conditional Log → Settings**.
+
+### Notes
+
+- Git URL pin: `https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.1`
+
 ## [0.2.0] - 2026-10-20
 
 ### Added

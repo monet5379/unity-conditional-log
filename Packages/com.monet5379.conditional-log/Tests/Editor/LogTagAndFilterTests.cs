@@ -72,6 +72,19 @@ namespace ConditionalLog.Tests
         }
 
         [Test]
+        public void LogTagFilter_SetAllEnabledAndSetAllDisabled()
+        {
+            LogEditorBootstrap.Reload();
+
+            LogTagFilter.SetAllDisabled();
+            Assert.That(LogTagFilter.IsEnabled(LogTagCatalogTestProbe.Probe), Is.False);
+
+            LogTagFilter.SetAllEnabled();
+            Assert.That(LogTagFilter.IsEnabled(LogTagCatalogTestProbe.Probe), Is.True);
+            Assert.That(LogTagFilter.GetDisabledTags(), Is.Empty);
+        }
+
+        [Test]
         public void Reload_IncludesLogTagCatalogProbeInKnownTags()
         {
             LogEditorBootstrap.Reload();
