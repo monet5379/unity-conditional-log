@@ -2,15 +2,6 @@ using System.Diagnostics;
 
 namespace ConditionalLog
 {
-    public enum GameLogTags
-    {
-        None = 0,
-        Boot,
-        Hud,
-        Obstacle,
-        Runner,
-    }
-
     // ponytail: 에디터 전용 개발 로그. 레벨은 메모리만. persist는 Editor.
     public static class GameLog
     {
@@ -76,11 +67,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Progress(string message)
         {
-            Write(LogLevel.Progress, GameLogTags.None, message);
+            Write(LogLevel.Progress, default, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Progress(GameLogTags tag, string message)
+        public static void Progress(LogTag tag, string message)
         {
             Write(LogLevel.Progress, tag, message);
         }
@@ -88,11 +79,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Info(string message)
         {
-            Write(LogLevel.Info, GameLogTags.None, message);
+            Write(LogLevel.Info, default, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Info(GameLogTags tag, string message)
+        public static void Info(LogTag tag, string message)
         {
             Write(LogLevel.Info, tag, message);
         }
@@ -100,11 +91,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Warning(string message)
         {
-            Write(LogLevel.Warning, GameLogTags.None, message);
+            Write(LogLevel.Warning, default, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Warning(GameLogTags tag, string message)
+        public static void Warning(LogTag tag, string message)
         {
             Write(LogLevel.Warning, tag, message);
         }
@@ -112,11 +103,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Error(string message)
         {
-            Write(LogLevel.Error, GameLogTags.None, message);
+            Write(LogLevel.Error, default, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Error(GameLogTags tag, string message)
+        public static void Error(LogTag tag, string message)
         {
             Write(LogLevel.Error, tag, message);
         }
@@ -124,11 +115,11 @@ namespace ConditionalLog
         [Conditional("UNITY_EDITOR")]
         public static void Except(string message)
         {
-            Write(LogLevel.Except, GameLogTags.None, message);
+            Write(LogLevel.Except, default, message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void Except(GameLogTags tag, string message)
+        public static void Except(LogTag tag, string message)
         {
             Write(LogLevel.Except, tag, message);
         }
@@ -142,23 +133,21 @@ namespace ConditionalLog
             Except,
         }
 
-        private static void Write(LogLevel level, GameLogTags tag, string message)
+        private static void Write(LogLevel level, LogTag tag, string message)
         {
             if (!IsLevelEnabled(level))
             {
                 return;
             }
 
-            if (tag != GameLogTags.None && !LogTagFilter.IsEnabled(tag))
+            if (!tag.IsNone && !LogTagFilter.IsEnabled(tag))
             {
                 return;
             }
 
-            // ponytail: Unity 경고·에러 채널과 섞지 않음. Info는 기본색, 그 외 레벨만 색을 입힘 (표시 언어 따름).
-            string levelLabel = ConditionalLogLocale.T(ConditionalLogStrings.LevelKey(level));
-            string body = tag != GameLogTags.None
-                ? $"[{levelLabel}] [{tag}] {message}"
-                : $"[{levelLabel}] {message}";
+            string body = !tag.IsNone
+                ? $"[{tag}] {message}"
+                : $"[{ConditionalLogLocale.T(ConditionalLogStrings.LevelKey(level))}] {message}";
             string formatted = level == LogLevel.Info
                 ? body
                 : $"<color={LevelColor(level)}>{body}</color>";

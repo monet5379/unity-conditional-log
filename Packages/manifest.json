@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.monet5379.conditional-log": "file:com.monet5379.conditional-log",
     "com.unity.2d.animation": "13.0.4",
     "com.unity.2d.aseprite": "3.0.1",
     "com.unity.2d.psdimporter": "12.0.1",

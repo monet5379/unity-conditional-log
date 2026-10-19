@@ -1,0 +1,24 @@
+{
+    "name": "ConditionalLog.Editor.Tests",
+    "rootNamespace": "ConditionalLog.Tests",
+    "references": [
+        "ConditionalLog.Runtime",
+        "ConditionalLog.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

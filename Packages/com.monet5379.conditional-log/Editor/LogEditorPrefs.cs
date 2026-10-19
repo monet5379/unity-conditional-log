@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
@@ -26,7 +25,7 @@ namespace ConditionalLog.Editor
 
         public static void SaveTags()
         {
-            List<GameLogTags> disabled = LogTagFilter.GetDisabledTags();
+            List<string> disabled = LogTagFilter.GetDisabledTags();
             var builder = new StringBuilder();
             for (int i = 0; i < disabled.Count; i++)
             {
@@ -41,7 +40,7 @@ namespace ConditionalLog.Editor
             EditorPrefs.SetString(TagDisabled, builder.ToString());
         }
 
-        public static IEnumerable<GameLogTags> LoadDisabledTags()
+        public static IEnumerable<string> LoadDisabledTags()
         {
             string raw = EditorPrefs.GetString(TagDisabled, string.Empty);
             if (string.IsNullOrEmpty(raw))
@@ -58,10 +57,7 @@ namespace ConditionalLog.Editor
                     continue;
                 }
 
-                if (Enum.TryParse(name, out GameLogTags tag) && tag != GameLogTags.None)
-                {
-                    yield return tag;
-                }
+                yield return name;
             }
         }
     }
