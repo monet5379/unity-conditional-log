@@ -1,64 +1,96 @@
 # Conditional Log
 
-에디터 전용 Unity 로그예요. 레벨·태그 필터는 에디터 콘솔 가시성만 바꾸고, `[Conditional("UNITY_EDITOR")]`는 플레이어 빌드에서 `GameLog.*` 호출과 인자 평가를 제거해요.
+에디터 전용 Unity **개발 로그** 패키지이다. `GameLog`로 레벨·태그 필터링된 콘솔 출력을 쓰고, 플레이어 빌드에서는 `[Conditional("UNITY_EDITOR")]`로 호출과 인자 평가를 제거한다.
+
+**구조·필터·Settings·persist** 상세는 [Architecture](docs/architecture/README.md)가 정본이다. 아래 **불변조건**만 README 계약이다.
+
+## 요구 사항
+
+- Unity **6000.3** 이상 (`com.monet5379.conditional-log` `package.json`)
+- 추가 패키지 의존성 없음
 
 ![개요](docs/images/overview.ko.png)
 
-정본: [`docs/diagrams/overview.ko.mmd`](docs/diagrams/overview.ko.mmd)
+다이어그램 소스: [`overview.ko.mmd`](docs/diagrams/overview.ko.mmd) · [`overview.mmd`](docs/diagrams/overview.mmd). 렌더 PNG: [`overview.ko.png`](docs/images/overview.ko.png) · [`overview.png`](docs/images/overview.png)
 
 ## 설치
 
-`unity-conditional-log/Assets/ConditionalLog`를 프로젝트 `Assets/`로 통째 복사해요 (Runtime/Editor asmdef 유지).
+### Git URL (권장)
 
-이 저장소 Unity 프로젝트에는 이미 `Assets/ConditionalLog`와 `SampleScene`의 필터 놀이터 `Assets/Demo`가 있어요. **Demo는 설치 대상이 아니에요.**
+Package Manager → **Install package from git URL**:
+
+```text
+https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.1.0
+```
+
+### 로컬 임베디드
+
+`Packages/com.monet5379.conditional-log` 를 소비 프로젝트 `Packages/` 아래에 둔다.
+
+패키지 README·CHANGELOG: [`Packages/com.monet5379.conditional-log/README.md`](Packages/com.monet5379.conditional-log/README.md).
+
+> [!NOTE]
+> **이 repo에서 확인 (선택)**
+>
+> - Unity로 repo 루트를 연다 → `Assets/Scenes/SampleScene` Play → `Assets/Demo/LogPlayground`가 샘플 로그를 보낸다. **Space**로 반복. 필터는 **Conditional Log → Settings**.
+> - `Assets/Demo`는 **패키지·설치 대상이 아니다.** Demo asmdef `ConditionalLog.Demo`가 **`ConditionalLog.Runtime`** (`Packages/.../Runtime/ConditionalLog.Runtime.asmdef`)을 참조해야 한다 — Inspector 참조가 비어 있으면 Console에 `LogTag` CS0246이 난다.
+> - Settings의 **`Test`** 태그는 Edit Mode 테스트용 카탈로그 프로브이며 Demo `Boot`/`Hud` 등과 별개이다.
 
 ## 불변조건
 
-- 필터를 꺼도 컴파일 제거가 아니에요. 플레이어 호출을 지우는 것은 `[Conditional]`뿐이에요.
-- 태그는 `GameLogTags` enum이에요. `None`이 아닌 멤버만 Settings/F1에 나타나고, 태그 없는 오버로드는 콘솔에 태그 칸을 넣지 않아요.
-- 릴리스에 남길 메시지는 `GameLog` 밖의 `Debug.Log*`를 쓰세요.
-- 핫 패스에 `$""` + `GameLog.*`를 두지 마세요.
+- 필터를 꺼도 컴파일 제거가 아니다. 플레이어 빌드에서 호출을 지우는 것은 `[Conditional]`뿐이다.
+- 태그는 `LogTag`이며, 소비 프로젝트의 `[LogTagCatalog]` **static class**에 `public static readonly LogTag` 필드로 선언한다. 카탈로그에 수집된 태그만 Settings에 나타나고, 태그 없는 오버로드는 콘솔에 태그 칸을 넣지 않는다.
+- 릴리스에 남길 메시지는 `GameLog` 밖의 `Debug.Log*`를 쓴다.
+- 핫 패스에 `$""` + `GameLog.*`를 두지 않는다.
+
+persist 키·출력 포맷·UI 문자열: [Architecture_ConditionalLog](docs/architecture/Architecture_ConditionalLog.md).
 
 ## 한계
 
-- `[Conditional]`은 `UNITY_EDITOR`에만 걸려 있어요. 에디터(Play 포함)에서는 **레벨·태그를 꺼도** 호출문은 남고, 호출부 인자(`$""`·계산 등)는 `Write` early return **전에** 평가돼요. 필터는 콘솔 출력만 막아요.
-- 에디터 쪽 그 비용을 없애려고 두 번째 컴파일 심볼이나 `Func<string>` 지연 메시지 API를 두지는 않아요. 필터를 꺼도 핫 패스 `GameLog.*`에 무거운 인자를 두지 않는 것이 이 패키지의 **현재 한계**예요.
+- `[Conditional]`은 `UNITY_EDITOR`에만 걸려 있다. 에디터(Play 포함)에서는 **레벨·태그를 꺼도** 호출문은 남고, 호출부 인자(`$""`·계산 등)는 `Write` early return **전에** 평가된다. 필터는 콘솔 출력만 막는다.
+- 에디터 인자 비용을 없애기 위한 두 번째 컴파일 심볼·`Func<string>` 지연 API는 제공하지 않는다. 필터 off여도 핫 패스 `GameLog.*`에 무거운 인자를 두지 않는 것이 **현재 한계**이다.
 
 ## 이 패키지가 아닌 것
 
 - 플레이어 빌드용 로그 파이프라인 (릴리스 메시지는 `Debug.Log*` 직접)
-- 패키지 기본 `GameLogTags` 멤버를 출시 템플릿으로 쓰는 것 (프로젝트에 맞게 enum을 고치세요)
-- `GameLog.*` **메시지 본문**을 어떻게 저장·다국어화할지 (호출부 선택; 보통 주언어 하나로 충분해요)
+- 패키지가 대신 정의해 주는 태그 목록 (프로젝트 카탈로그 클래스에 맞게 선언한다)
+- Play Mode IMGUI 필터 오버레이 (필터는 **Conditional Log → Settings**만)
+- Settings·패키지 UI **언어 전환** (`level.*` 콘솔·토글 라벨은 영어, 그 외 Settings UI 문자열은 한글 고정)
+- `GameLog.*` **메시지 본문** 저장·다국어화 (호출부 선택; 보통 주언어 하나로 충분하다)
 
 ## 사용
-
-API는 `ConditionalLog.GameLog`예요. 태그는 `GameLogTags` enum만 받아요.
 
 ```csharp
 using ConditionalLog;
 
+[LogTagCatalog]
+public static class GameLogTags
+{
+    public static readonly LogTag Hud = new LogTag("Hud");
+}
+
 GameLog.Info(GameLogTags.Hud, "Press Start");
-GameLog.Info($"boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
+GameLog.Info("boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
 ```
 
-`[Conditional("UNITY_EDITOR")]`가 `GameLog.*`에 걸려 있어서 플레이어 빌드에서는 호출과 인자 평가가 제거돼요.
+카탈로그·`GameLog` 호출 코드가 **자체 asmdef** 안이면 그 asmdef가 **`ConditionalLog.Runtime`을 참조**해야 한다. asmdef 없이 기본 `Assembly-CSharp`만 쓰면 `autoReferenced`로 잡힌다. 자세한 절차는 [패키지 README — 태그 카탈로그](Packages/com.monet5379.conditional-log/README.md#태그-카탈로그).
 
-메뉴: **Conditional Log → Settings**. Play에서는 **F1** 오버레이.
+메뉴 **Conditional Log → Settings**.
 
 ![Log Settings](docs/images/settings.png)
 
-글: [Conditional 로그와 빌드 비용](https://monet5379.github.io/notes/conditional-log-build-cost/)
+## 문서
 
-## 현재 설계
-
-- **컴파일 제거:** `GameLog.Progress` / `Info` / `Warning` / `Error` / `Except`만. 필터는 호출문을 지우지 않아요.
-- **레벨:** 메모리. `EditorPrefs` (`ConditionalLog.Level.*`). 기본 on. 에디터 로드·Play 진입 시 다시 읽어요.
-- **태그:** `GameLogTags` 멤버(`None` 제외)가 Settings/F1에 항상 나타나요. 미설정 = on. **비활성** 태그만 CSV로 persist (`ConditionalLog.Tag.Disabled`).
-- **F1 오버레이:** 에디터 Play만. IMGUI (`Event`), Input System 없음. Game 뷰 포커스. `LogPlayground` `OnGUI` 상단에 `F1 — log filters` 힌트를 띄워요.
-- **패키지 UI 언어:** Settings·오버레이·레벨 라벨은 영어 기본 (`ConditionalLogStrings`). 한글은 선택 파일 `ConditionalLogStrings.Ko.cs` — 필요 없으면 그 파일과 `Get`의 Korean 분기를 지우면 돼요. `GameLog.*` **인자 메시지**는 로컬라이즈하지 않아요.
-- **출력:** 통과한 호출은 모두 `Debug.Log`예요. `LogWarning` / `LogError`로 나누지 않아 설계 메모가 Unity 경고·에러 채널과 섞이지 않아요. 콘솔 줄은 `<color>[Level] [tag] message</color>` (전체 줄에 레벨 색; 태그 없으면 `[tag]` 칸 없음).
-- **데모:** `Assets/Demo` 놀이터 (설치 대상 아님). `SampleScene`의 `LogPlayground` (`DemoGame.cs`)가 Play 진입 시 레벨·태그 샘플 로그를 한 번 보내요. **Space**로 같은 묶음을 다시 보내고, **F1**로 레벨·태그 필터를 켜고 끄며 콘솔 가시성을 확인하세요.
+| 문서 | 내용 |
+| --- | --- |
+| [Architecture](docs/architecture/README.md) | 허브 · [Architecture_ConditionalLog](docs/architecture/Architecture_ConditionalLog.md) |
+| [overview.ko.mmd](docs/diagrams/overview.ko.mmd) · [overview.mmd](docs/diagrams/overview.mmd) | 개요 (Mermaid · PNG `docs/images/overview*.png`) |
+| [Conditional 로그와 빌드 비용](https://monet5379.github.io/notes/conditional-log-build-cost/) | 배경 메모 |
 
 ## 라이선스
 
 [MIT](LICENSE)
+
+---
+
+README 본문은 AI-assisted로 작성·갱신했다. README와 코드·Architecture가 충돌하면 **코드**가 이긴다.
