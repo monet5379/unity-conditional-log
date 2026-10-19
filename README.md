@@ -20,7 +20,7 @@
 Package Manager → **Install package from git URL**:
 
 ```text
-https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.1.0
+https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.0
 ```
 
 ### 로컬 임베디드
@@ -70,6 +70,7 @@ public static class GameLogTags
 }
 
 GameLog.Info(GameLogTags.Hud, "Press Start");
+GameLog.Info(GameLogTags.Hud, "hp {0}", hp);
 GameLog.Info("boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
 ```
 

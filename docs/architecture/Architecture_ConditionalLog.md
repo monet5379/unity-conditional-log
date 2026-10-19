@@ -45,7 +45,7 @@ Conditional Log는 `Packages/com.monet5379.conditional-log/` UPM 패키지의 �
 
 | 타입 | 레이어 | 책임 |
 | --- | --- | --- |
-| `GameLog` | Runtime | `[Conditional("UNITY_EDITOR")]` public API · 메모리 레벨 플래그 · `SetLevel` / `SetLogLevelAll` / `SetLogLevelOff` · `Write` → `Debug.Log` |
+| `GameLog` | Runtime | `[Conditional("UNITY_EDITOR")]` public API · `string` 및 `format` + `params object[]` (태그 유무) · `string.Format`은 메서드 안 · 메모리 레벨 플래그 · `SetLevel` / `SetLogLevelAll` / `SetLogLevelOff` · `Write` → `Debug.Log` |
 | `LogTag` | Runtime | 태그 값 (`Name`, `IsNone`) · Ordinal 동등 |
 | `LogTagCatalogAttribute` | Runtime | 소비자 static class 마커 — Editor가 `TypeCache`로 수집 |
 | `LogTagFilter` | Runtime | 태그 on/off (미설정 = on, **비활성 목록**만 메모리 보관) · `KnownTags` (카탈로그 union) |
@@ -83,7 +83,7 @@ flowchart TB
 
 ### 런타임 흐름 — 로그 출력 (Runtime Flow)
 
-1. 게임 코드가 `GameLog.*(message)` 또는 `GameLog.*(LogTag, message)` 호출.
+1. 게임 코드가 `GameLog.*(message)`, `GameLog.*(format, args)`, `GameLog.*(LogTag, message)`, `GameLog.*(LogTag, format, args)` 중 하나를 호출한다. format 오버로드는 메서드 안에서 `string.Format` 한다.
 2. **플레이어 빌드:** `[Conditional("UNITY_EDITOR")]`로 호출과 인자 평가가 컴파일에서 제거.
 3. **에디터( Edit / Play ):**
    - 호출과 인자(`$""` 등)는 **항상** 평가.

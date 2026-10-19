@@ -1,6 +1,6 @@
 {
   "name": "com.monet5379.conditional-log",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "displayName": "Conditional Log",
   "description": "에디터 전용 개발 로그 — 레벨·태그 필터, 플레이어 빌드에서 Conditional 제거",
   "unity": "6000.3",

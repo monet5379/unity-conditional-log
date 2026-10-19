@@ -4,6 +4,16 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-20
+
+### Added
+
+- `GameLog` format 오버로드 (`string format, params object[]`). Progress / Info / Warning / Error / Except, 태그 유무. `string.Format`은 `[Conditional("UNITY_EDITOR")]` 메서드 안에서만 실행한다.
+
+### Notes
+
+- Git URL pin: `https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.0`
+
 ## [0.1.0] - 2026-10-19
 
 ### Added
