@@ -32,14 +32,15 @@ https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5
 > [!NOTE]
 > **이 repo에서 확인 (선택)**
 >
+> - **개발용 repo:** `Assets/Demo`의 `[LogTagCatalog] GameLogTags`만 쓴다. Package Manager에서 **GameLog Tags Catalog** 샘플 **Import는 하지 않는다** (Demo와 Import한 샘플이 같이 있으면 `[LogTagCatalog]`가 이중 수집된다). 배포용 예시 정본은 `Samples~/GameLogTagsCatalog`이며, Demo 카탈로그는 샘플과 맞춰 둔다. 소비 프로젝트는 [패키지 README — Samples](Packages/com.monet5379.conditional-log/README.md#samples)를 따른다.
 > - Unity로 repo 루트를 연다 → `Assets/Scenes/SampleScene` Play → `Assets/Demo/LogPlayground`가 샘플 로그를 보낸다. **Space**로 반복. 필터는 **Tools → Conditional Log → Settings**.
-> - `Assets/Demo`는 **패키지·설치 대상이 아니다.** Demo asmdef `ConditionalLog.Demo`가 **`ConditionalLog.Runtime`** (`Packages/.../Runtime/ConditionalLog.Runtime.asmdef`)을 참조해야 한다 — Inspector 참조가 비어 있으면 Console에 `LogTag` CS0246이 난다.
-> - Settings의 **`Test`** 태그는 Edit Mode 테스트용 카탈로그 프로브이며 Demo `Boot`/`Hud` 등과 별개이다.
+> - `Assets/Demo`는 **패키지·설치 대상이 아니다.** 카탈로그·호출 코드가 asmdef 안이면 **`ConditionalLog.Runtime`** (`Packages/.../Runtime/ConditionalLog.Runtime.asmdef`)을 참조해야 한다 — Inspector 참조가 비어 있으면 Console에 `LogTag` CS0246이 난다.
+> - Settings의 **`Test`** 태그는 Edit Mode 테스트용 카탈로그 프로브이며 Demo 카탈로그 태그와 별개이다.
 
 ## 불변조건
 
 - 필터를 꺼도 컴파일 제거가 아니다. 플레이어 빌드에서 호출을 지우는 것은 `[Conditional]`뿐이다.
-- 태그는 `LogTag`이며, 소비 프로젝트의 `[LogTagCatalog]` **static class**에 `public static readonly LogTag` 필드로 선언한다. 카탈로그에 수집된 태그만 Settings에 나타나고, 태그 없는 오버로드는 콘솔에 태그 칸을 넣지 않는다.
+- 태그는 `LogTag`이며, 소비 프로젝트의 `[LogTagCatalog]` **static class**에 `public static readonly LogTag` 필드로 선언한다. Settings foldout은 `new LogTag(name, category)`의 category(선택)로만 묶는다. 카탈로그에 수집된 태그만 Settings에 나타나고, 태그 없는 오버로드는 콘솔에 태그 칸을 넣지 않는다.
 - 릴리스에 남길 메시지는 `GameLog` 밖의 `Debug.Log*`를 쓴다.
 - 핫 패스에 `$""` + `GameLog.*`를 두지 않는다.
 
@@ -66,7 +67,7 @@ using ConditionalLog;
 [LogTagCatalog]
 public static class GameLogTags
 {
-    public static readonly LogTag Hud = new LogTag("Hud");
+    public static readonly LogTag Hud = new LogTag("Hud", "UI");
 }
 
 GameLog.Info(GameLogTags.Hud, "Press Start");
@@ -76,7 +77,7 @@ GameLog.Info("boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
 
 카탈로그·`GameLog` 호출 코드가 **자체 asmdef** 안이면 그 asmdef가 **`ConditionalLog.Runtime`을 참조**해야 한다. asmdef 없이 기본 `Assembly-CSharp`만 쓰면 `autoReferenced`로 잡힌다. 자세한 절차는 [패키지 README — 태그 카탈로그](Packages/com.monet5379.conditional-log/README.md#태그-카탈로그).
 
-메뉴 **Tools → Conditional Log → Settings**.
+메뉴 **Tools → Conditional Log → Settings** — **레벨** / **태그** 탭. 태그 탭은 category foldout·검색·전부 켜기/끄기를 제공한다.
 
 ![Log Settings](docs/images/settings.png)
 

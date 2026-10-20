@@ -14,8 +14,9 @@ Conditional Log **현재 구조** Architecture 허브이다. 설치·불변조�
 
 | | 경로 |
 | --- | --- |
-| UPM 패키지 | `Packages/com.monet5379.conditional-log/` (`Runtime/` · `Editor/` · `Tests/Editor/`) |
-| Demo (비설치) | `Assets/Demo/` · asmdef `ConditionalLog.Demo` → `ConditionalLog.Runtime` |
+| UPM 패키지 | `Packages/com.monet5379.conditional-log/` (`Runtime/` · `Editor/` · `Tests/Editor/` · `Samples~/GameLogTagsCatalog/`) |
+| Demo (비설치) | `Assets/Demo/` · `LogPlayground` + `GameLogTags` — **이 repo**는 Demo 카탈로그만 (샘플 Import 금지, 태그는 샘플과 동기화) |
+| UPM 샘플 (Import) | 소비 프로젝트용 · `GameLog Tags Catalog` → `ConditionalLog.Sample.GameLogTags` |
 | Edit Mode 테스트 | `ConditionalLog.Editor.Tests` · `LogTagAndFilterTests` — `manifest.json` `testables`에 패키지 id 필요 시 [패키지 README — Tests](../../Packages/com.monet5379.conditional-log/README.md#tests) |
 | 다이어그램 | `docs/diagrams/overview.ko.mmd` · `overview.mmd` → `docs/images/overview*.png` |
 

@@ -1,0 +1,16 @@
+{
+    "name": "ConditionalLog.Sample.GameLogTags",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4314c0ba9342e564fbf916120df6bb9f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

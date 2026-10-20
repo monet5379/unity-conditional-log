@@ -9,7 +9,7 @@ namespace ConditionalLog.Tests
     [LogTagCatalog]
     internal static class LogTagCatalogTestProbe
     {
-        public static readonly LogTag Probe = new LogTag("Test");
+        public static readonly LogTag Probe = new LogTag("Test", "Tests");
     }
 
     [TestFixture]
@@ -94,6 +94,15 @@ namespace ConditionalLog.Tests
                 known.Any(t => t.Equals(LogTagCatalogTestProbe.Probe)),
                 Is.True,
                 "Expected TypeCache catalog collection to include the test probe tag.");
+        }
+
+        [Test]
+        public void Reload_ProbeTagHasCategory()
+        {
+            LogEditorBootstrap.Reload();
+
+            LogTag probe = LogTagFilter.KnownTags.First(t => t.Equals(LogTagCatalogTestProbe.Probe));
+            Assert.That(probe.Category, Is.EqualTo("Tests"));
         }
 
         [Test]

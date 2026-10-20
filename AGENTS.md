@@ -25,8 +25,8 @@ unity-conditional-log/
 ├── AGENTS.md
 ├── README.md
 ├── docs/architecture/Architecture_ConditionalLog.md
-├── Packages/com.monet5379.conditional-log/  ← UPM 패키지
-└── Assets/Demo/                             ← 놀이터. 비설치
+├── Packages/com.monet5379.conditional-log/  ← UPM 패키지 (Runtime · Editor · Tests · Samples~)
+└── Assets/Demo/                             ← 놀이터. 비설치 (카탈로그는 Samples~/GameLogTagsCatalog와 동기화)
 ```
 
 ## 에이전트가 지킬 것
@@ -34,7 +34,7 @@ unity-conditional-log/
 - Kit **common** + **personal** (README 계약 + `Architecture_*`; Plan/Optimization/ADR는 요청 시만).
 - `.meta` 생성·수정·삭제 금지.
 - 커밋은 사용자 **명시 요청** 시에만. Kit CommitMessages — `type(scope): 한글 제목` + **본문(why) 필수**
-- Demo를 출시 스키마·필수 설치 경로로 취급하지 않음.
+- Demo를 출시 스키마·필수 설치 경로로 취급하지 않음. **이 repo**에서는 Demo `[LogTagCatalog]`만 쓰고 UPM 샘플 Import는 하지 않는다 (루트 README NOTE).
 - 구조·경계·public API·필터/Settings 흐름 변경 시 `docs/architecture/Architecture_ConditionalLog.md` 갱신. 계약 변경 시 README 먼저.
 
 ## 이 repo만의 메모

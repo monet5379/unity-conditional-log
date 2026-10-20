@@ -11,13 +11,17 @@ namespace ConditionalLog
         static readonly Dictionary<string, string> Table = new Dictionary<string, string>
         {
             { "editor.window_title", "로그 설정" },
-            { "editor.heading", "Conditional Log" },
-            { "editor.help",
-                "레벨·태그 필터는 에디터 표시만 바꿉니다. 플레이어 빌드에서는 [Conditional]로 GameLog.* 호출이 제거됩니다." },
+            { "editor.heading", "조건부 로그" },
+            { "editor.help.levels",
+                "레벨 필터는 에디터 콘솔에 GameLog.* 출력이 보일지 정합니다. 꺼져 있어도 호출문은 남으며, 플레이어 빌드에서는 [Conditional]로 GameLog.* 호출이 제거됩니다." },
+            { "editor.help.tags",
+                "태그 필터는 에디터에서 태그별 출력만 끕니다. [LogTagCatalog]에 선언한 태그만 목록에 나타나며, 기본은 켜짐입니다. 플레이어 빌드에서는 [Conditional]로 GameLog.* 호출이 제거됩니다." },
             { "editor.levels", "레벨" },
             { "editor.tags", "태그" },
             { "editor.all_on", "전부 켜기" },
             { "editor.all_off", "전부 끄기" },
+            { "editor.categories_expand_all", "전부 펼치기" },
+            { "editor.categories_collapse_all", "전부 접기" },
             { "editor.search", "검색" },
 
             { "level.progress", "Progress" },

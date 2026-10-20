@@ -5,6 +5,13 @@
   "description": "에디터 전용 개발 로그 — 레벨·태그 필터, 플레이어 빌드에서 Conditional 제거",
   "unity": "6000.3",
   "dependencies": {},
+  "samples": [
+    {
+      "displayName": "GameLog Tags Catalog",
+      "description": "예시 [LogTagCatalog] static class. Package Manager에서 Import 후 필드·카테고리를 프로젝트에 맞게 수정한다.",
+      "path": "Samples~/GameLogTagsCatalog"
+    }
+  ],
   "author": {
     "name": "monet5379",
     "email": "monet5379@gmail.com"

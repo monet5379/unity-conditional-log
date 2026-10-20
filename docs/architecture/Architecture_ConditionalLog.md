@@ -21,6 +21,7 @@ Conditional Log는 `Packages/com.monet5379.conditional-log/` UPM 패키지의 �
 - `GameLog` public API · 레벨·태그 필터 · `Debug.Log` 출력 포맷
 - Editor: **Tools → Conditional Log → Settings** (유일한 필터 UI), `EditorPrefs` persist
 - 패키지 UI 문자열: `ConditionalLogStrings` (한글, `level.*`·`level.*.desc`만 영어) · `ConditionalLogLocale.T` → `Get`
+- UPM `Samples~/GameLogTagsCatalog` — 소비 프로젝트 Import용 예시 카탈로그
 - 이 repo `Assets/Demo` — 필터 놀이터 (**설치·복사 대상 아님**)
 
 ### 제외 범위 (Out of Scope)
@@ -41,21 +42,22 @@ Conditional Log는 `Packages/com.monet5379.conditional-log/` UPM 패키지의 �
 | `Packages/.../Runtime/` | `ConditionalLog.Runtime` | `GameLog`, `LogTag`, `LogTagFilter`, UI 로케일 |
 | `Packages/.../Editor/` | `ConditionalLog.Editor` | Settings 창, `EditorPrefs`, 부트스트랩 |
 | `Packages/.../Tests/Editor/` | `ConditionalLog.Editor.Tests` | Edit Mode — `LogTag` · 필터 · 카탈로그 수집 · 프로브 태그 `Test` (`LogTagCatalogTestProbe`) |
-| `Assets/Demo/` | `ConditionalLog.Demo` | `LogPlayground` · `[LogTagCatalog] GameLogTags` — **비설치** |
+| `Packages/.../Samples~/GameLogTagsCatalog/` | `ConditionalLog.Sample.GameLogTags` | 예시 `[LogTagCatalog] GameLogTags` — Package Manager **Import** |
+| `Assets/Demo/` | `ConditionalLog.Demo` | `LogPlayground` · `[LogTagCatalog] GameLogTags` — **비설치** · 이 repo에서는 샘플 **Import 안 함** ([README NOTE](../../README.md)) |
 
 | 타입 | 레이어 | 책임 |
 | --- | --- | --- |
 | `GameLog` | Runtime | `[Conditional("UNITY_EDITOR")]` public API · `string` 및 `format` + `params object[]` (태그 유무) · `string.Format`은 메서드 안 · 메모리 레벨 플래그 · `SetLevel` / `SetLogLevelAll` / `SetLogLevelOff` · `Write` → `Debug.Log` |
-| `LogTag` | Runtime | 태그 값 (`Name`, `IsNone`) · Ordinal 동등 |
+| `LogTag` | Runtime | 태그 값 (`Name`, `Category`, `IsNone`) · 동등·필터는 `Name`만 |
 | `LogTagCatalogAttribute` | Runtime | 소비자 static class 마커 — Editor가 `TypeCache`로 수집 |
 | `LogTagFilter` | Runtime | 태그 on/off (미설정 = on, **비활성 목록**만 메모리 보관) · `KnownTags` (카탈로그 union) |
 | `LogEditorBootstrap` | Editor | `InitializeOnLoad` · Play/Edit 진입 시 prefs → `GameLog` / `LogTagFilter` |
 | `LogEditorPrefs` | Editor | `ConditionalLog.Level.*` · `ConditionalLog.Tag.Disabled` (CSV) |
-| `LogSettingsWindow` | Editor | 메뉴 Settings · 레벨 토글 아래 `level.*.desc` · 태그 검색 · 변경 시 즉시 `SaveLevels` / `SaveTags` |
+| `LogSettingsWindow` | Editor | **Tools → Settings** · **레벨** / **태그** 탭 · 레벨 토글 + `level.*.desc` · 태그 `Category` foldout · 검색 · category 전부 펼치기/접기 · 전부 켜기/끄기 · 변경 시 `SaveLevels` / `SaveTags` |
 | `ConditionalLogLocale` | Runtime | 패키지 UI 문자열 lookup · `T(key)` |
 | `ConditionalLogStrings` | Runtime | 패키지 UI 문자열 (한글) · `level.*` 키만 영어 (Progress … Except) |
 
-태그는 소비 프로젝트의 `[LogTagCatalog]` **static class**에 선언한 `public static readonly LogTag` 필드이다. `IsNone`(빈 이름)은 수집·UI에서 제외하며, 태그 없는 오버로드는 콘솔 줄에 `[tag]` 칸을 넣지 않는다.
+태그는 소비 프로젝트의 `[LogTagCatalog]` **static class**에 선언한 `public static readonly LogTag` 필드이다. `LogTag.Category`가 비어 있으면 Settings에서 foldout 없이 나열한다. `IsNone`(빈 이름)은 수집·UI에서 제외하며, 태그 없는 오버로드는 콘솔 줄에 `[tag]` 칸을 넣지 않는다.
 
 ```mermaid
 flowchart TB
@@ -94,7 +96,7 @@ flowchart TB
 
 1. `Reload()`: `EditorPrefs` bool (`ConditionalLog.Level.<LogLevel>`) → `GameLog.SetLevel`; `TypeCache` + `[LogTagCatalog]` static class의 `LogTag` 필드 수집 → `LogTagFilter.SetKnownTags`; disabled 태그 이름 CSV (`ConditionalLog.Tag.Disabled`) → `LogTagFilter.ApplyDisabled`.
 2. Edit Mode 진입 · Play Mode 진입 시 `Reload()` 재실행.
-3. **Settings** (`LogSettingsWindow`): 레벨·태그 토글 변경마다 `SaveLevels` 또는 `SaveTags`. 레벨 **전부 켜기/끄기**는 `GameLog.SetLogLevelAll` / `SetLogLevelOff` 후 `SaveLevels`. 태그 **전부 켜기/끄기**는 `LogTagFilter.SetAllEnabled` / `SetAllDisabled` 후 `SaveTags`. 그 외 태그는 `KnownTags` 목록을 한 줄씩 토글한다.
+3. **Settings** (`LogSettingsWindow`): **레벨** 탭과 **태그** 탭으로 UI를 나눈다. 토글 변경마다 `SaveLevels` 또는 `SaveTags`. 레벨 **전부 켜기/끄기**는 `GameLog.SetLogLevelAll` / `SetLogLevelOff` 후 `SaveLevels`. 태그 **전부 켜기/끄기**는 `LogTagFilter.SetAllEnabled` / `SetAllDisabled` 후 `SaveTags`. 태그 탭은 `KnownTags`를 `Category` foldout 아래 토글하고, 검색·category 전부 펼치기/접기를 제공한다.
 
 ### persist 키 (`LogEditorPrefs`)
 
@@ -112,7 +114,7 @@ flowchart TB
 - **태그 persist:** 활성 태그 목록이 아니라 **비활성 태그 이름만** CSV로 저장한다. 카탈로그에 필드를 추가하고 domain reload 후 Settings에 자동 노출(기본 on).
 - **테스트 카탈로그 태그:** manifest `testables`에 `com.monet5379.conditional-log`가 포함되면 `ConditionalLog.Editor.Tests`의 `[LogTagCatalog] LogTagCatalogTestProbe.Probe` (`LogTag("Test")`)가 Settings **`Test`** 행으로 `KnownTags`에 들어간다 (`Reload_IncludesLogTagCatalogProbeInKnownTags`). 게임 태그가 아니면 끄거나 무시한다.
 - **출력 채널:** 설계 메모가 Unity Console의 Warning/Error 스택과 섞이지 않도록 전부 `Debug.Log`이다.
-- **Demo:** `Assets/Demo/LogPlayground` — Play 시작·Space로 샘플 로그. 필터는 Settings. 설치 복사본에 포함하지 않는다.
+- **Demo:** `Assets/Demo/LogPlayground` · `GameLogTags` — Play 시작·**Space**로 태그 없음 + `Addressable` / `HUD` / `JsonData` / `Audio` 등 샘플 로그. 필터는 Settings. 설치 복사본에 포함하지 않는다. **개발용 repo**는 Demo 카탈로그만 쓰고 UPM 샘플 Import는 하지 않는다 (이중 `[LogTagCatalog]`). Demo `GameLogTags` 필드·category는 `Samples~/GameLogTagsCatalog`와 동기화한다.
 
 ## 변경 가이드 (Change Guidelines)
 
@@ -121,7 +123,8 @@ flowchart TB
 | 변경 | 확인할 경로 |
 | --- | --- |
 | 로그 레벨 추가 | `GameLog.LogLevel`, `Write`, `LevelColor`, `LogEditorPrefs.LevelKey`, Settings draw 목록 |
-| 태그 카탈로그 | 소비자 `[LogTagCatalog]` class · `LogEditorBootstrap.CollectCatalogTags` · `LogTagFilter.SetKnownTags` · Settings의 `KnownTags` 루프 |
+| 태그 카탈로그 | 소비자 `[LogTagCatalog]` class · `LogEditorBootstrap.CollectCatalogTags` · `LogTagFilter.SetKnownTags` · Settings 태그 탭 · `Samples~/GameLogTagsCatalog` ↔ `Assets/Demo/GameLogTags` 동기화 |
+| `LogTag.Category` · Settings 태그 UI | `LogTag` 생성자 · `LogSettingsWindow` category foldout · `ConditionalLogStrings` (`editor.help.tags`, `editor.categories_*`) |
 | 새 public API | `[Conditional("UNITY_EDITOR")]` 유지 · `Write` 경유 여부 |
 | Edit Mode 테스트 | `Tests/Editor/LogTagAndFilterTests` · `ConditionalLog.Editor.Tests.asmdef` |
 | UI 문자열 | `ConditionalLogStrings` 키 · `ConditionalLogLocale.T` |

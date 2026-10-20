@@ -22,9 +22,17 @@ https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5
 
 이 레포의 `Packages/com.monet5379.conditional-log` 폴더를 Unity 프로젝트 `Packages/` 아래에 두면 Package Manager **In Project**에 표시된다.
 
+## Samples
+
+Package Manager에서 **Conditional Log** 패키지 → **Samples** → **GameLog Tags Catalog** → **Import**.
+
+`Assets/Samples/com.monet5379.conditional-log/<version>/GameLogTagsCatalog/`에 복사된다. asmdef `ConditionalLog.Sample.GameLogTags`가 `ConditionalLog.Runtime`을 참조한다. 예시 태그는 Assets · Data · Setting · UI category foldout 확인용이며, 이름·category는 프로젝트에 맞게 고친다.
+
+개발용 [GitHub 레포](https://github.com/monet5379/unity-conditional-log)는 `Assets/Demo` 카탈로그만 쓰고 이 샘플 **Import는 하지 않는다** (이중 `[LogTagCatalog]`).
+
 ## 태그 카탈로그
 
-태그는 `LogTag` 값이다. **소비 프로젝트**에 `[LogTagCatalog]`가 붙은 `public static` 클래스를 하나 두고, `public static readonly LogTag` 필드로 선언한다. Settings에는 카탈로그에 수집된 태그만 나타난다 (기본 on, 끈 태그만 `EditorPrefs`에 저장).
+태그는 `LogTag` 값이다. **소비 프로젝트**에 `[LogTagCatalog]`가 붙은 `public static` 클래스를 두고, `public static readonly LogTag` 필드로 선언한다. Settings에는 카탈로그에 수집된 태그만 나타난다 (기본 on, 끈 태그만 `EditorPrefs`에 저장). Settings foldout 그룹은 `new LogTag("이름", "카테고리")`의 **두 번째 인자**로만 정한다 (생략 시 foldout 없이 나열).
 
 카탈로그·`GameLog` 호출 스크립트가 **자체 asmdef** 안에 있으면 그 asmdef가 **`ConditionalLog.Runtime`을 참조**해야 한다 (Inspector **Assembly Definition References**에 추가). asmdef 없이 `Assets/` 기본 어셈블리만 쓰면 `autoReferenced`로 자동 참조된다.
 
@@ -34,8 +42,8 @@ using ConditionalLog;
 [LogTagCatalog]
 public static class GameLogTags
 {
-    public static readonly LogTag Hud = new LogTag("Hud");
-    public static readonly LogTag Boot = new LogTag("Boot");
+    public static readonly LogTag Hud = new LogTag("Hud", "Gameplay");
+    public static readonly LogTag Boot = new LogTag("Boot", "Data");
 }
 ```
 
@@ -47,7 +55,7 @@ GameLog.Info(GameLogTags.Hud, "hp {0}", hp);
 GameLog.Info("boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
 ```
 
-메뉴 **Tools → Conditional Log → Settings**.
+메뉴 **Tools → Conditional Log → Settings** — **레벨** / **태그** 탭. 태그 탭에서 category foldout·검색·전부 펼치기/접기·전부 켜기/끄기.
 
 ## Tests
 

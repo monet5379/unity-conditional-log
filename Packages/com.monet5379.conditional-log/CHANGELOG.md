@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- `LogTag` 선택 category 인자 — Settings 태그 foldout. 필터·persist는 태그 **이름**만 (category는 UI 전용).
+- UPM 샘플 **GameLog Tags Catalog** (`Samples~/GameLogTagsCatalog`) — 예시 `[LogTagCatalog]` 클래스.
+
+### Changed
+
+- Settings: **레벨** / **태그** 탭 분리 · 탭별 HelpBox (`editor.help.levels` / `editor.help.tags`).
+
 ## [0.2.1] - 2026-10-20
 
 ### Added

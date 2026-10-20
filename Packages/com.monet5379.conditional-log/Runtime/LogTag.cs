@@ -6,9 +6,12 @@ namespace ConditionalLog
     {
         public string Name { get; }
 
-        public LogTag(string name)
+        public string Category { get; }
+
+        public LogTag(string name, string category = null)
         {
             Name = name;
+            Category = category ?? string.Empty;
         }
 
         public bool IsNone => string.IsNullOrEmpty(Name);

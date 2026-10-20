@@ -22,11 +22,11 @@ namespace ConditionalLog.Demo
 
         private static void EmitSampleLogs()
         {
-            GameLog.Info("sample info");
-            GameLog.Progress(GameLogTags.Boot, "boot progress");
-            GameLog.Info(GameLogTags.Hud, "hud info");
-            GameLog.Warning(GameLogTags.Obstacle, "obstacle warning");
-            GameLog.Error(GameLogTags.Runner, "runner error");
+            GameLog.Info("sample info (no tag)");
+            GameLog.Progress(GameLogTags.Addressable, "addressable progress");
+            GameLog.Info(GameLogTags.HUD, "hud info");
+            GameLog.Warning(GameLogTags.JsonData, "json data warning");
+            GameLog.Error(GameLogTags.Audio, "audio error");
         }
     }
 }
