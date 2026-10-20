@@ -2,7 +2,7 @@
 
 에디터 전용 Unity **개발 로그** 패키지이다. `GameLog`로 레벨·태그 필터링된 콘솔 출력을 쓰고, 플레이어 빌드에서는 `[Conditional("UNITY_EDITOR")]`로 호출과 인자 평가를 제거한다.
 
-**구조·필터·Settings·persist** 상세는 [Architecture](docs/architecture/README.md)가 정본이다. 아래 **불변조건**만 README 계약이다.
+**구조·필터·Settings·persist** 상세는 [Architecture](docs/architecture/README.md)가 정본이다. 아래 **불변조건**만 README 계약이다. 짧은 단계별 소개는 [Overview](docs/Overview_ConditionalLog.md)를 본다.
 
 ## 요구 사항
 
@@ -43,6 +43,7 @@ https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5
 - 태그는 `LogTag`이며, 소비 프로젝트의 `[LogTagCatalog]` **static class**에 `public static readonly LogTag` 필드로 선언한다. Settings foldout은 `new LogTag(name, category)`의 category(선택)로만 묶는다. 카탈로그에 수집된 태그만 Settings에 나타나고, 태그 없는 오버로드는 콘솔에 태그 칸을 넣지 않는다.
 - 릴리스에 남길 메시지는 `GameLog` 밖의 `Debug.Log*`를 쓴다.
 - 핫 패스에 `$""` + `GameLog.*`를 두지 않는다.
+- `GameLog.*` 메시지에 포맷·`<color>` 등 **변환**이 필요하면 그 식은 `GameLog.*(` **인자 안**에만 둔다. 변환 결과를 지역 변수에 담아 호출하지 않는다.
 
 persist 키·출력 포맷·UI 문자열: [Architecture_ConditionalLog](docs/architecture/Architecture_ConditionalLog.md).
 
@@ -73,6 +74,11 @@ public static class GameLogTags
 GameLog.Info(GameLogTags.Hud, "Press Start");
 GameLog.Info(GameLogTags.Hud, "hp {0}", hp);
 GameLog.Info("boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
+
+GameLog.Info(text.ToColorString());           // OK — 변환식이 인자 안
+var content = text.ToColorString();
+GameLog.Info(content);                        // NG — 변환·문자열 생성이 호출 밖
+GameLog.Info(text);                           // NG — 필요한 변환 없이 원본만
 ```
 
 카탈로그·`GameLog` 호출 코드가 **자체 asmdef** 안이면 그 asmdef가 **`ConditionalLog.Runtime`을 참조**해야 한다. asmdef 없이 기본 `Assembly-CSharp`만 쓰면 `autoReferenced`로 잡힌다. 자세한 절차는 [패키지 README — 태그 카탈로그](Packages/com.monet5379.conditional-log/README.md#태그-카탈로그).
@@ -85,6 +91,7 @@ GameLog.Info("boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
 
 | 문서 | 내용 |
 | --- | --- |
+| [Overview](docs/Overview_ConditionalLog.md) | 단계별 소개 (영상·온보딩용 톤) |
 | [Architecture](docs/architecture/README.md) | 허브 · [Architecture_ConditionalLog](docs/architecture/Architecture_ConditionalLog.md) |
 | [overview.ko.mmd](docs/diagrams/overview.ko.mmd) · [overview.mmd](docs/diagrams/overview.mmd) | 개요 (Mermaid · PNG `docs/images/overview*.png`) |
 | [Conditional 로그와 빌드 비용](https://monet5379.github.io/notes/conditional-log-build-cost/) | 배경 메모 |

@@ -1,0 +1,6 @@
+%%{init: {'theme':'dark'}}%%
+flowchart LR
+  Call["GameLog.Info(...)"] --> Cond["[Conditional UNITY_EDITOR]"]
+  Cond --> Editor["에디터: 호출 · 호출 시 인자 계산"]
+  Cond --> Player["플레이어: 호출 제거"]
+  Player --> None["호출 시 인자 계산 없음"]

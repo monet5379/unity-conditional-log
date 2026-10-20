@@ -55,6 +55,8 @@ GameLog.Info(GameLogTags.Hud, "hp {0}", hp);
 GameLog.Info("boot complete"); // 태그 없음 — 콘솔에 [tag] 칸 없음
 ```
 
+포맷·`<color>` 등 **변환**이 필요하면 `GameLog.Info(text.ToColorString())`처럼 변환식을 `GameLog.*(` **인자 안**에만 둔다. `var content = …` 후 `GameLog.Info(content)`나 변환 없이 `GameLog.Info(text)`는 쓰지 않는다. ([레포 README — 불변조건](https://github.com/monet5379/unity-conditional-log#%EB%B6%88%EB%B3%80%EC%A1%B0%EA%B1%B4))
+
 메뉴 **Tools → Conditional Log → Settings** — **레벨** / **태그** 탭. 태그 탭에서 category foldout·검색·전부 펼치기/접기·전부 켜기/끄기.
 
 ## Tests

@@ -1,0 +1,9 @@
+%%{init: {'theme':'dark'}}%%
+flowchart TB
+  Call["GameLog.*(...) 호출"] --> Eval["호출 시 인자 계산"]
+  Eval --> W["Write · 레벨 · 태그 필터"]
+  W --> L{"레벨 on?"}
+  L -->|no| H["Console 숨김<br/>인자는 이미 계산됨"]
+  L -->|yes| T{"태그 있음 · on?"}
+  T -->|no| H
+  T -->|yes| DL["Debug.Log"]

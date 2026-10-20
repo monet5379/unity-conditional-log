@@ -111,6 +111,7 @@ flowchart TB
 
 - **필터 ≠ 컴파일 제거:** 레벨·태그 off는 `Write` early return만. 플레이어에서 호출을 지우는 것은 `[Conditional]`뿐.
 - **에디터 인자 평가:** 필터 off여도 호출문과 인자는 남는다. 핫 패스에 `$""` + `GameLog.*`를 두지 않는다 ([README — 한계](../../README.md)).
+- **호출 인자:** 포맷·색 등 변환 식은 `GameLog.*(` 인자 안에만 둔다. 변환 결과를 지역 변수에 담아 호출하지 않는다 ([README — 불변조건](../../README.md#불변조건)).
 - **태그 persist:** 활성 태그 목록이 아니라 **비활성 태그 이름만** CSV로 저장한다. 카탈로그에 필드를 추가하고 domain reload 후 Settings에 자동 노출(기본 on).
 - **테스트 카탈로그 태그:** manifest `testables`에 `com.monet5379.conditional-log`가 포함되면 `ConditionalLog.Editor.Tests`의 `[LogTagCatalog] LogTagCatalogTestProbe.Probe` (`LogTag("Test")`)가 Settings **`Test`** 행으로 `KnownTags`에 들어간다 (`Reload_IncludesLogTagCatalogProbeInKnownTags`). 게임 태그가 아니면 끄거나 무시한다.
 - **출력 채널:** 설계 메모가 Unity Console의 Warning/Error 스택과 섞이지 않도록 전부 `Debug.Log`이다.
@@ -135,5 +136,6 @@ flowchart TB
 ## 관련 문서 (See also)
 
 - [architecture README](README.md) — 허브
+- [Overview_ConditionalLog](../Overview_ConditionalLog.md) — 단계별 소개
 - [Conditional 로그와 빌드 비용](https://monet5379.github.io/notes/conditional-log-build-cost/) — 배경 메모
 - [unity-studio-kit — Documentation (Architecture)](https://github.com/monet5379/unity-studio-kit/blob/main/docs/game/Documentation.md#architecture-작성-규약)

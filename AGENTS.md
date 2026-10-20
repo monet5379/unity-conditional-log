@@ -41,6 +41,7 @@ unity-conditional-log/
 
 - 네임스페이스: `ConditionalLog` · Demo `ConditionalLog.Demo`
 - 의존: Unity 기본만 (Input System 없음)
+- `GameLog.*`: 포맷·색 등 **변환**은 `GameLog.*(` 인자 **안**에만 둔다. `var`에 변환 결과를 담아 넘기지 않는다. [README — 불변조건](README.md#불변조건)
 
 ### 커밋 (이 repo)
 
