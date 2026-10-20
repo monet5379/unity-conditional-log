@@ -20,7 +20,7 @@
 Package Manager → **Install package from git URL**:
 
 ```text
-https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.1
+https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.2
 ```
 
 ### 로컬 임베디드

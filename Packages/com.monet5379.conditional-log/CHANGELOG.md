@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-10-20
+
 ### Added
 
 - `LogTag` 선택 category 인자 — Settings 태그 foldout. 필터·persist는 태그 **이름**만 (category는 UI 전용).
@@ -12,6 +14,10 @@
 ### Changed
 
 - Settings: **레벨** / **태그** 탭 분리 · 탭별 HelpBox (`editor.help.levels` / `editor.help.tags`).
+
+### Notes
+
+- Git URL pin: `https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.2`
 
 ## [0.2.1] - 2026-10-20
 
