@@ -15,7 +15,7 @@
 2. 아래 URL 입력 (태그는 릴리스 버전에 맞게 변경):
 
 ```text
-https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.2
+https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.3
 ```
 
 ### 로컬 임베디드

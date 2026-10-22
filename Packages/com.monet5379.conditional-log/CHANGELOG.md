@@ -4,6 +4,16 @@
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-10-22
+
+### Changed
+
+- Settings 태그 탭: category foldout — 카테고리 안 태그가 하나라도 켜져 있으면 foldout 라벨을 활성 태그와 같은 색으로 표시.
+
+### Notes
+
+- Git URL pin: `https://github.com/monet5379/unity-conditional-log.git?path=/Packages/com.monet5379.conditional-log#v0.2.3`
+
 ## [0.2.2] - 2026-10-20
 
 ### Added
