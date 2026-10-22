@@ -231,7 +231,15 @@ namespace ConditionalLog.Editor
                     _tagCategoryFoldouts[section.FoldoutKey] = categoryOpen;
                 }
 
+                bool categoryHasEnabledTag = SectionHasAnyEnabledTag(section.Tags);
+                Color previousCategoryContentColor = GUI.contentColor;
+                if (categoryHasEnabledTag)
+                {
+                    GUI.contentColor = EnabledToggleContentColor;
+                }
+
                 categoryOpen = EditorGUILayout.Foldout(categoryOpen, section.Label, true);
+                GUI.contentColor = previousCategoryContentColor;
                 _tagCategoryFoldouts[section.FoldoutKey] = categoryOpen;
                 if (categoryOpen)
                 {
@@ -312,6 +320,19 @@ namespace ConditionalLog.Editor
             for (int i = 0; i < tags.Count; i++)
             {
                 if (tags[i].Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool SectionHasAnyEnabledTag(IReadOnlyList<LogTag> tags)
+        {
+            for (int i = 0; i < tags.Count; i++)
+            {
+                if (LogTagFilter.IsEnabled(tags[i]))
                 {
                     return true;
                 }
